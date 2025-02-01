@@ -22,3 +22,29 @@ CREATE TABLE Sport (
                               NOT NULL,
     Sport_Description TEXT
 );
+
+3. Court Table
+
+CREATE TABLE "Court" (
+	"Court_ID"	INTEGER,
+	"Court_Name"	TEXT,
+	"Court_Location"	TEXT,
+	"Court_Capacity"	INTEGER,
+	"Court_Status"	TEXT,
+	PRIMARY KEY("Court_ID")
+);
+
+4. Bookings Table
+
+CREATE TABLE "Bookings" (
+	"Booking_ID"	INTEGER,
+	"Customer_ID"	INTEGER,
+	"Sport_ID"	INTEGER,
+	"Court_ID"	INTEGER,
+	"Booking_Status"	TEXT,
+	"Booking_Time"	TEXT,
+	PRIMARY KEY("Booking_ID"),
+	CONSTRAINT "CID" FOREIGN KEY("Court_ID") REFERENCES "Court"("Court_ID"),
+	CONSTRAINT "CSID" FOREIGN KEY("Customer_ID") REFERENCES "Customer"("Customer_ID"),
+	CONSTRAINT "SID" FOREIGN KEY("Sport_ID") REFERENCES "Sports"("Sport_ID")
+);
