@@ -46,5 +46,5 @@ CREATE TABLE "Bookings" (
 	PRIMARY KEY("Booking_ID"),
 	CONSTRAINT "CID" FOREIGN KEY("Court_ID") REFERENCES "Court"("Court_ID"),
 	CONSTRAINT "CSID" FOREIGN KEY("Customer_ID") REFERENCES "Customer"("Customer_ID"),
-	CONSTRAINT "SID" FOREIGN KEY("Sport_ID") REFERENCES "Sports"("Sport_ID")
+	CONSTRAINT "SID" FOREIGN KEY("Sport_ID") REFERENCES "Sport"("Sport_ID")
 );
