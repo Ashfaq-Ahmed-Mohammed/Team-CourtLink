@@ -22,7 +22,7 @@ func (customer) TableName() string {
 
 func init() {
 	var err error
-	db, err = gorm.Open(sqlite.Open("../CourtLink.db"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open("../../CourtLink.db"), &gorm.Config{})
 	if err != nil {
 		fmt.Println(err)
 	}
