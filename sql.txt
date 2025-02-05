@@ -23,17 +23,23 @@ CREATE TABLE Sport (
     Sport_Description TEXT
 );
 
-3. Court Table
+3. Court Table 
 
-CREATE TABLE "Court" (
-	"Court_ID"	INTEGER NOT NULL UNIQUE,
-	"Court_Name"	TEXT NOT NULL UNIQUE,
-	"Court_Location"	TEXT NOT NULL UNIQUE,
-	"Court_Capacity"	INTEGER,
-	"Court_Status"	TEXT,
-	PRIMARY KEY("Court_ID" AUTOINCREMENT)
+CREATE TABLE Court (
+    Court_ID       INTEGER NOT NULL
+                           UNIQUE,
+    Court_Name     TEXT    NOT NULL
+                           UNIQUE,
+    Court_Location TEXT    NOT NULL
+                           UNIQUE,
+    Court_Capacity INTEGER,
+    Court_Status   INTEGER NOT NULL,
+    Sport_id       INTEGER REFERENCES Sport (Sport_ID) ON DELETE SET NULL
+                                                       ON UPDATE CASCADE,
+    PRIMARY KEY (
+        Court_ID AUTOINCREMENT
+    )
 );
-
 4. Bookings Table
 
 CREATE TABLE "Bookings" (
