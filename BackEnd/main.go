@@ -1,6 +1,7 @@
 package main
 
 import (
+	"BackEnd/Court"
 	"BackEnd/Customer"
 	"fmt"
 	"log"
@@ -13,7 +14,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/Customer", Customer.CreateCustomer).Methods("POST")
-
+	r.HandleFunc("/GetCourt", Court.GetCourt).Methods("GET")
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	fmt.Println("Server is running on port 8080")
