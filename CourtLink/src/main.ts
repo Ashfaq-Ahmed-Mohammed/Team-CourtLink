@@ -5,8 +5,8 @@ import { AppComponent } from './app/app.component'; // Correct path if app.compo
 bootstrapApplication(AppComponent, {
   providers: [
     provideAuth0({
-      domain: 'dev-zvcqb0yxk33pst6d.us.auth0.com',
-      clientId: 'RW4WlJ5sD2pWNV0a4AdrNjKf9LJxWuqg',
+      domain: 'dev-7gppji8v3bdbsj6k.us.auth0.com',
+      clientId: 'K3yZGflpa3qLYWXQtrBUsNaO4xXrfwtv',
       authorizationParams: {
         redirect_uri: window.location.origin
       }
