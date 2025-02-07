@@ -10,6 +10,8 @@ import (
 func GetCourt(w http.ResponseWriter, r *http.Request) {
 	var sportselection DataBase.SportSelection
 	var sport DataBase.Sport
+	var court_TimeSlot DataBase.Court_TimeSlots
+	var courts []DataBase.CourtAvailability
 	var courtStatus uint
 	var all_courtstatus []uint
 	var courtNames []string
@@ -41,11 +43,16 @@ func GetCourt(w http.ResponseWriter, r *http.Request) {
 		all_courtstatus = append(all_courtstatus, courtStatus)
 	}
 
-	var courts []DataBase.CourtAvailability
 	for i := 0; i < len(courtNames); i++ {
+		if err := DataBase.DB.Model(&DataBase.Court_TimeSlots{}).Where("Court_Name = ?", courtNames[i]).Find(&court_TimeSlot).Error; err != nil {
+			fmt.Println("Court TimeSlots not found:", err)
+			http.Error(w, "Court TimeSlots not found", http.StatusNotFound)
+			return
+		}
 		court := DataBase.CourtAvailability{
 			CourtName:   courtNames[i],
 			CourtStatus: all_courtstatus[i],
+			Slots:       []int{court_TimeSlot.Slot_8_9, court_TimeSlot.Slot_9_10, court_TimeSlot.Slot_10_11, court_TimeSlot.Slot_11_12, court_TimeSlot.Slot_12_13, court_TimeSlot.Slot_13_14, court_TimeSlot.Slot_14_15, court_TimeSlot.Slot_15_16, court_TimeSlot.Slot_16_17, court_TimeSlot.Slot_17_18},
 		}
 		courts = append(courts, court)
 	}

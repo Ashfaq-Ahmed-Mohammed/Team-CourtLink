@@ -14,6 +14,7 @@ type SportSelection struct {
 type CourtAvailability struct {
 	CourtName   string `json:"CourtName"`
 	CourtStatus uint   `json:"CourtStatus"`
+	Slots       []int  `json:"Slots"`
 }
 
 type Customer struct {
@@ -67,6 +68,10 @@ func (Sport) TableName() string {
 
 func (Court) TableName() string {
 	return "Court"
+}
+
+func (Court_TimeSlots) TableName() string {
+	return "Court_TimeSlots"
 }
 
 func init() {
