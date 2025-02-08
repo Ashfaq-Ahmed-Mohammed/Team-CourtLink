@@ -1,6 +1,10 @@
+import { routes } from './app/app.routes';
 import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideAuth0 } from '@auth0/auth0-angular';
-import { AppComponent } from './app/app.component'; // Correct path if app.component.ts is inside the 'app' folder
+import { AppComponent } from './app/app.component';
+import { RouterModule } from '@angular/router'; // Correct path if app.component.ts is inside the 'app' folder
+
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -11,5 +15,7 @@ bootstrapApplication(AppComponent, {
         redirect_uri: window.location.origin
       }
     }),
+    provideRouter(routes, withComponentInputBinding()),
   ]
+
 });
