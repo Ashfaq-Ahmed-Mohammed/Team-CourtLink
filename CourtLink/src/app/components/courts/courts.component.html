@@ -1,0 +1,23 @@
+<div class="p-10 min-h-screen bg-gradient-to-b from-[#005B8D] to-[#F26A2E] font-sans">
+  <!-- Updated to dynamically show the selected sport -->
+  <div class="text-slate-200">
+    <h2 class="text-4xl font-bold mb-6 text-center">
+      AVAILABLE <span class=" text-slate-200 uppercase">{{ selectedSport }}</span> COURTS
+    </h2>
+  </div>
+  <!-- Court Grid -->
+  <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div *ngFor="let court of courts" class="relative group overflow-hidden rounded-xl shadow-lg border border-gray-200">
+      
+      <!-- Tennis Court Image -->
+      <img [src]="court.image" alt="{{ court.name }}" class="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105">
+
+      <!-- Overlay Effect on Hover -->
+      <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition-all flex flex-col justify-end p-4 text-white">
+        <h3 class="text-lg font-semibold">{{ court.name }}</h3>
+        <p class="text-sm">{{ court.location }}</p>
+      </div>
+      
+    </div>
+  </div>
+</div>
