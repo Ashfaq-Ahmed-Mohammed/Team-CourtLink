@@ -8,13 +8,16 @@ import (
 
 func CreateCustomer(w http.ResponseWriter, r *http.Request) {
 	var c DataBase.Customer
+
 	err := json.NewDecoder(r.Body).Decode(&c)
 	if err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
 	if err := DataBase.DB.Create(&c).Error; err != nil {
+
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -26,6 +29,5 @@ func CreateCustomer(w http.ResponseWriter, r *http.Request) {
 		"message":  "Customer record added successfully",
 		"customer": c,
 	}
-
 	json.NewEncoder(w).Encode(response)
 }

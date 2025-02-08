@@ -19,9 +19,9 @@ type CourtAvailability struct {
 
 type Customer struct {
 	Customer_ID uint   `gorm:"column:Customer_ID;primaryKey;autoIncrement" json:"Customer_ID"`
-	Name        string `gorm:"column:Name" json:"Name"`
+	Name        string `gorm:"column:Name" json:"name"`
 	Contact     string `gorm:"column:Contact" json:"Contact"`
-	Email       string `gorm:"column:Email" json:"Email"`
+	Email       string `gorm:"column:Email" json:"email"`
 }
 
 type Sport struct {
