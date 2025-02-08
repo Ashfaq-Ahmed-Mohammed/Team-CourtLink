@@ -16,6 +16,14 @@ func CreateCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var existingCustomer DataBase.Customer
+	result := DataBase.DB.Where("name = ? AND email = ?", c.Name, c.Email).First(&existingCustomer)
+
+	if result.RowsAffected > 0 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	if err := DataBase.DB.Create(&c).Error; err != nil {
 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
