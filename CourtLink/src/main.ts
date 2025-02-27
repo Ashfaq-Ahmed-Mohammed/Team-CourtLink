@@ -4,6 +4,7 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideAuth0 } from '@auth0/auth0-angular';
 import { AppComponent } from './app/app.component';
 import { RouterModule } from '@angular/router'; // Correct path if app.component.ts is inside the 'app' folder
+import { provideHttpClient } from '@angular/common/http';
 
 
 bootstrapApplication(AppComponent, {
@@ -16,6 +17,7 @@ bootstrapApplication(AppComponent, {
       }
     }),
     provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient()
   ]
 
-});
+}).catch(err => console.error(err));
