@@ -11,9 +11,18 @@ type SportSelection struct {
 	Sport string `json:"sport"`
 }
 
+type CourtUpdate struct {
+	Court_Name  string `json:"Court_Name"`
+	Court_ID    uint   `json:"Court_ID"`
+	Slot_Index  int    `json:"Slot_Index"`
+	Customer_ID uint   `json:"Customer_ID"`
+	Sport_name  string `json:"Sport_name"`
+}
+
 type CourtAvailability struct {
 	CourtName   string `json:"CourtName"`
 	CourtStatus uint   `json:"CourtStatus"`
+	CourtID     uint   `json:"CourtID"`
 	Slots       []int  `json:"Slots"`
 }
 
@@ -36,14 +45,15 @@ type Court struct {
 	Court_Location string `gorm:"column:Court_Location;not null" json:"Court_Location"`
 	Court_Capacity *int
 	Court_Status   int    `gorm:"column:Court_Status;not null" json:"Court_Status"`
-	Sport_id       *uint  `gorm:"column:Sport_id;index;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"Sport_id"`
-	Sport          *Sport `gorm:"foreignKey:Sport_ID"`
+	Sport_id       uint   `gorm:"column:Sport_id;index;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"Sport_id"`
+	Sport          *Sport `gorm:"foreignKey:Sport_ID; references:Sport_id"`
 }
 
 type Court_TimeSlots struct {
 	ID         uint   `gorm:"column:ID;primaryKey;autoIncrement" json:"ID"`
-	Slot_8_9   int    `gorm:"column:slot_8_9;not null;default:1" json:"slot_8_9"`
-	Slot_9_10  int    `gorm:"column:slot_9_10;not null;default:1" json:"slot_9_10"`
+	Court_ID   uint   `gorm:"column:Court_ID;not null;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"Court_ID"`
+	Slot_08_09 int    `gorm:"column:slot_08_09;not null;default:1" json:"slot_08_09"`
+	Slot_09_10 int    `gorm:"column:slot_09_10;not null;default:1" json:"slot_09_10"`
 	Slot_10_11 int    `gorm:"column:slot_10_11;not null;default:1" json:"slot_10_11"`
 	Slot_11_12 int    `gorm:"column:slot_11_12;not null;default:1" json:"slot_11_12"`
 	Slot_12_13 int    `gorm:"column:slot_12_13;not null;default:1" json:"slot_12_13"`
@@ -53,7 +63,8 @@ type Court_TimeSlots struct {
 	Slot_16_17 int    `gorm:"column:slot_16_17;not null;default:1" json:"slot_16_17"`
 	Slot_17_18 int    `gorm:"column:slot_17_18;not null;default:1" json:"slot_17_18"`
 	Court_Name string `gorm:"column:Court_Name;unique;not null;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"Court_Name"`
-	Court      *Court `gorm:"foreignKey:Court_Name"`
+	Court      *Court `gorm:"foreignKey:Court_Name; references:Court_Name"`
+	CourtIDRef *Court `gorm:"foreignKey:Court_ID; references:Court_ID"`
 }
 
 var DB *gorm.DB
