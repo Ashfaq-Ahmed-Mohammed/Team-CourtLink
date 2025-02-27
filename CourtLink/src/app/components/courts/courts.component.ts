@@ -1,25 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-courts',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './courts.component.html',
   styleUrls: ['./courts.component.css']
 })
 export class CourtsComponent {
-  selectedSport: string | null = null; // Store the sport name dynamically
-  courts = [
-    { name: 'Center Court', location: 'National Sports Arena', image: 'https://img.icons8.com/?size=100&id=HVTfsoSWrdwS&format=png&color=000000' },
-    { name: 'Grand Slam Court', location: 'Downtown Tennis Club', image: 'https://img.icons8.com/?size=100&id=HVTfsoSWrdwS&format=png&color=000000' },
-    { name: 'Clay Court', location: 'City Sports Complex', image: 'https://img.icons8.com/?size=100&id=HVTfsoSWrdwS&format=png&color=000000' }
-  ];
+  // Signals for state management
+  selectedSport = signal<string>('');
+  courts = signal<any[]>([]);
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private apiService: ApiService) {
+    // Read sport name from URL after constructor initializes route
+    effect(() => {
+      const sport = this.route.snapshot.paramMap.get('sport') || '';
+      this.selectedSport.set(sport);
 
-  ngOnInit(): void {
-    this.selectedSport = this.route.snapshot.paramMap.get('sport'); // Retrieve sport from the route
+      if (sport) {
+        this.fetchCourts(sport);
+      }
+    });
+  }
+
+  fetchCourts(sport: string): void {
+    this.apiService.getCourts(sport).subscribe({
+      next: (data) => this.courts.set(data.courts || []),
+      error: (error) => console.error('Error fetching courts:', error)
+    });
   }
 }

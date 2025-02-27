@@ -3,6 +3,6 @@ import { SportsComponent } from './components/sports/sports.component';
 import { CourtsComponent } from './components/courts/courts.component';
 
 export const routes: Routes = [
-  { path: '', component: SportsComponent }, // Default route shows SportsComponent first
-  { path: 'courts/:sport', component: CourtsComponent }, // Navigates to CourtsComponent when a sport is selected
+  { path: '', component: SportsComponent },            // Default: SportsComponent loads on startup
+  { path: 'courts/:sport', component: CourtsComponent }  // CourtsComponent loads when a sport is selected
 ];

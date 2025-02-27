@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Import CommonModule for *ngFor
-import { Router, RouterModule } from '@angular/router'; // Import Router
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-sports',
   standalone: true,
-  imports: [CommonModule, RouterModule], // Include CommonModule for *ngFor support
+  imports: [CommonModule, RouterModule], // HttpClient does not need to be imported here
   templateUrl: './sports.component.html',
   styleUrls: ['./sports.component.css']
 })
@@ -18,9 +20,37 @@ export class SportsComponent {
     { name: 'Cricket', icon: 'https://img.icons8.com/?size=100&id=4252&format=png&color=000000' },
   ];
 
-  constructor(private router: Router) {} // Inject Router
+  private BASE_URL = 'http://localhost:8080'; // Backend URL
 
-  selectSport(sport: string): void {
-    this.router.navigate(['/courts', sport.toLowerCase()]); // Navigate to the courts page with the sport name
-  }
+  constructor(private router: Router, private http: HttpClient) {} // Inject HttpClient
+
+  /* selectSport(sport: string): void {
+    const requestData = { sport };
+
+    // Send JSON request to backend before navigation
+    this.http.post(`${this.BASE_URL}/getCourts`, requestData).subscribe(
+      () => {
+        // Navigate to the courts page after successful API call
+        this.router.navigate(['/courts', sport.toLowerCase()]);
+      },
+      (error) => {
+        console.error('Error fetching courts:', error);
+      }
+    );
+  } */
+
+    async selectSport(sport: string): Promise<void> {
+      // Create a JSON payload with the selected sport
+      const requestData = { sport: sport };
+  
+      try {
+        // Send JSON to the backend at localhost:8080/getCourts
+        await firstValueFrom(this.http.post(`${this.BASE_URL}/getCourts`, requestData));
+        // On success, navigate to the CourtsComponent with the sport parameter in the URL
+        this.router.navigate(['/courts', sport.toLowerCase()]);
+      } catch (error) {
+        console.error('Error fetching courts:', error);
+      }
+    }
+  
 }
