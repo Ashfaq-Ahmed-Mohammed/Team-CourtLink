@@ -62,6 +62,7 @@ func main() {
 
 	r.HandleFunc("/Customer", Customer.CreateCustomer).Methods("POST")
 	r.HandleFunc("/GetCourt", Court.GetCourt).Methods("GET")
+	r.HandleFunc("/UpdateCourtSlot", Court.UpdateCourtSlot).Methods("POST")
 	newroute := r.PathPrefix("/api").Subrouter()
 	newroute.Use(validateToken)
 	newroute.HandleFunc("/CreateCustomer", Customer.CreateCustomer).Methods("POST")
