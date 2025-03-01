@@ -16,17 +16,22 @@ func GetCourt(w http.ResponseWriter, r *http.Request) {
 		CourtStatus uint   `gorm:"column:Court_Status"`
 	}
 	var courtData []CourtInfo
-	err := json.NewDecoder(r.Body).Decode(&sportselection)
-	if err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+	sports := r.URL.Query().Get("sport")
+
+	// Validate the parameter
+	if sports == "" {
+		http.Error(w, "Missing 'sport' query parameter", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("Sport Selection:", sportselection.Sport)
-	if err := DataBase.DB.Where("Sport_name = ?", sportselection.Sport).First(&sport).Error; err != nil {
+
+	fmt.Println("✅ Sport Selection:", sports) // Debugging log
+
+	if err := DataBase.DB.Where("Sport_name = ?", sports.).First(&sport).Error; err != nil {
 		fmt.Println("Sport not found:", err)
 		http.Error(w, "Sport not found", http.StatusNotFound)
 		return
 	}
+	
 
 	if err := DataBase.DB.Model(&DataBase.Court{}).
 		Select("Court_ID, Court_Name, Court_Status").
