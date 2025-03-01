@@ -13,6 +13,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
@@ -61,6 +62,13 @@ func validateToken(next http.Handler) http.Handler {
 func main() {
 	r := mux.NewRouter()
 
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:4200"}, // Adjust to your frontend URL
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	})
+
 	r.HandleFunc("/Customer", Customer.CreateCustomer).Methods("POST")
 	r.HandleFunc("/GetCourt", Court.GetCourt).Methods("GET")
 	r.HandleFunc("/UpdateCourtSlot", Court.UpdateCourtSlot).Methods("POST")
@@ -70,7 +78,7 @@ func main() {
 	newroute.HandleFunc("/CreateCustomer", Customer.CreateCustomer).Methods("POST")
 
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
-
+	handler := corsHandler.Handler(r)
 	fmt.Println("Server is running on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }

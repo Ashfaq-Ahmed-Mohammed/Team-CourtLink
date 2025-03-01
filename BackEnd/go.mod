@@ -5,6 +5,7 @@ go 1.23.5
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.1
 	github.com/gorilla/mux v1.8.1
+	github.com/rs/cors v1.11.1
 	github.com/swaggo/http-swagger v1.3.4
 	gorm.io/driver/sqlite v1.5.7
 	gorm.io/gorm v1.25.12
