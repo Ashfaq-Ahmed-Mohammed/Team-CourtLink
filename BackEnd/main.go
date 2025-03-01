@@ -62,23 +62,37 @@ func validateToken(next http.Handler) http.Handler {
 func main() {
 	r := mux.NewRouter()
 
+	// Middleware to handle CORS
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:4200"}, // Adjust to your frontend URL
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedOrigins:   []string{"http://localhost:4200"}, // Adjust based on frontend URL
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	})
 
-	r.HandleFunc("/Customer", Customer.CreateCustomer).Methods("POST")
-	r.HandleFunc("/GetCourt", Court.GetCourt).Methods("GET")
-	r.HandleFunc("/UpdateCourtSlot", Court.UpdateCourtSlot).Methods("POST")
-	r.HandleFunc("/CreateBooking", Bookings.CreateBooking).Methods("POST")
+	// Handle OPTIONS requests globally
+	r.Use(mux.CORSMethodMiddleware(r))
+
+	// Explicitly handle OPTIONS requests
+	r.HandleFunc("/getCourts", Court.GetCourt).Methods("GET", "OPTIONS")
+
+	// Other API routes
+	r.HandleFunc("/Customer", Customer.CreateCustomer).Methods("POST", "OPTIONS")
+	r.HandleFunc("/UpdateCourtSlot", Court.UpdateCourtSlot).Methods("POST", "OPTIONS")
+	r.HandleFunc("/CreateBooking", Bookings.CreateBooking).Methods("POST", "OPTIONS")
+
+	// Protected routes under "/api"
 	newroute := r.PathPrefix("/api").Subrouter()
 	newroute.Use(validateToken)
-	newroute.HandleFunc("/CreateCustomer", Customer.CreateCustomer).Methods("POST")
+	newroute.HandleFunc("/CreateCustomer", Customer.CreateCustomer).Methods("POST", "OPTIONS")
 
+	// Serve Swagger documentation
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+
+	// Apply CORS middleware
 	handler := corsHandler.Handler(r)
+
+	// Start Server
 	fmt.Println("Server is running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
