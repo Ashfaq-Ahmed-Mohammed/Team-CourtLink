@@ -26,12 +26,11 @@ func GetCourt(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("✅ Sport Selection:", sports) // Debugging log
 
-	if err := DataBase.DB.Where("Sport_name = ?", sports.).First(&sport).Error; err != nil {
+	if err := DataBase.DB.Where("Sport_name = ?", sports).First(&sport).Error; err != nil {
 		fmt.Println("Sport not found:", err)
 		http.Error(w, "Sport not found", http.StatusNotFound)
 		return
 	}
-	
 
 	if err := DataBase.DB.Model(&DataBase.Court{}).
 		Select("Court_ID, Court_Name, Court_Status").
