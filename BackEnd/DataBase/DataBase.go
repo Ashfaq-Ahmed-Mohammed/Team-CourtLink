@@ -2,6 +2,7 @@ package DataBase
 
 import (
 	"fmt"
+	"time"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -66,6 +67,18 @@ type Court_TimeSlots struct {
 	Court      *Court `gorm:"foreignKey:Court_Name; references:Court_Name"`
 	CourtIDRef *Court `gorm:"foreignKey:Court_ID; references:Court_ID"`
 }
+type Bookings struct {
+	Booking_ID     uint      `gorm:"column:Booking_ID;primaryKey;autoIncrement" json:"Booking_ID"`
+	Customer_ID    uint      `gorm:"column:Customer_ID;index;not null" json:"Customer_ID"`
+	Sport_ID       uint      `gorm:"column:Sport_ID;index;not null" json:"Sport_ID"`
+	Court_ID       uint      `gorm:"column:Court_ID;index;not null" json:"Court_ID"`
+	Booking_Status string    `gorm:"column:Booking_Status;not null" json:"Booking_Status"`
+	Booking_Time   time.Time `gorm:"column:Booking_Time;not null" json:"Booking_Time"`
+
+	Customer Customer `gorm:"foreignKey:Customer_ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Sport    Sport    `gorm:"foreignKey:Sport_ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Court    Court    `gorm:"foreignKey:Court_ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
 
 var DB *gorm.DB
 
@@ -83,6 +96,10 @@ func (Court) TableName() string {
 
 func (Court_TimeSlots) TableName() string {
 	return "Court_TimeSlots"
+}
+
+func (Bookings) TableName() string {
+	return "Bookings"
 }
 
 func init() {
