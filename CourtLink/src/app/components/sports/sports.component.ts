@@ -1,3 +1,4 @@
+import { ApiService } from './../../services/api.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -22,7 +23,7 @@ export class SportsComponent {
 
   private BASE_URL = 'http://localhost:8080'; // Backend URL
 
-  constructor(private router: Router, private http: HttpClient) {} // Inject HttpClient
+  constructor(private router: Router, private http: HttpClient, private apiService: ApiService) {} // Inject HttpClient and ApiService
 
   /* selectSport(sport: string): void {
     const requestData = { sport };
@@ -40,12 +41,10 @@ export class SportsComponent {
   } */
 
     async selectSport(sport: string): Promise<void> {
-      // Create a JSON payload with the selected sport
-      const requestData = { sport: sport };
   
       try {
         // Send JSON to the backend at localhost:8080/getCourts
-        await firstValueFrom(this.http.post(`${this.BASE_URL}/getCourts`, requestData));
+        await firstValueFrom(this.apiService.getCourts(sport));
         // On success, navigate to the CourtsComponent with the sport parameter in the URL
         this.router.navigate(['/courts', sport.toLowerCase()]);
       } catch (error) {
