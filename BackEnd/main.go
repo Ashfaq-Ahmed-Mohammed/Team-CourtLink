@@ -1,9 +1,16 @@
 package main
 
+// @title Court Booking API
+// @version 1.0
+// @description API for managing court bookings
+// @host localhost:8080
+// @BasePath /
+
 import (
 	"BackEnd/Bookings"
 	"BackEnd/Court"
 	"BackEnd/Customer"
+	_ "BackEnd/docs"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
@@ -78,7 +85,7 @@ func main() {
 
 	// Other API routes
 	r.HandleFunc("/Customer", Customer.CreateCustomer).Methods("POST", "OPTIONS")
-	r.HandleFunc("/UpdateCourtSlot", Court.UpdateCourtSlot).Methods("POST", "OPTIONS")
+	r.HandleFunc("/UpdateCourtSlot", Court.UpdateCourtSlot).Methods("PUT", "OPTIONS")
 	r.HandleFunc("/CreateBooking", Bookings.CreateBooking).Methods("POST", "OPTIONS")
 
 	// Protected routes under "/api"
@@ -89,10 +96,8 @@ func main() {
 	// Serve Swagger documentation
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
-	// Apply CORS middleware
 	handler := corsHandler.Handler(r)
 
-	// Start Server
 	fmt.Println("Server is running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
