@@ -24,7 +24,7 @@ func GetCourt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("✅ Sport Selection:", sports) // Debugging log
+	fmt.Println("Sport Selection:", sports)
 
 	if err := DataBase.DB.Where("Sport_name = ?", sports).First(&sport).Error; err != nil {
 		fmt.Println("Sport not found:", err)
