@@ -67,6 +67,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/customer": {
+            "post": {
+                "description": "Adds a new customer to the database if they do not already exist.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Create a new customer",
+                "parameters": [
+                    {
+                        "description": "Customer data",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.Customer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer already exists"
+                    },
+                    "201": {
+                        "description": "Customer record added successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/getCourts": {
             "get": {
                 "description": "Fetches courts based on the selected sport and provides their availability status along with time slots.",
@@ -152,6 +196,23 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "Sport_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "DataBase.Customer": {
+            "type": "object",
+            "properties": {
+                "Contact": {
+                    "type": "string"
+                },
+                "Customer_ID": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

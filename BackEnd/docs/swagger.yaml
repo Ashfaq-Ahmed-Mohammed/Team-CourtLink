@@ -26,6 +26,17 @@ definitions:
       Sport_name:
         type: string
     type: object
+  DataBase.Customer:
+    properties:
+      Contact:
+        type: string
+      Customer_ID:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+    type: object
   DataBase.ErrorResponse:
     properties:
       message:
@@ -74,6 +85,35 @@ paths:
       summary: Update court slot status
       tags:
       - courts
+  /customer:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new customer to the database if they do not already exist.
+      parameters:
+      - description: Customer data
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/DataBase.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Customer already exists
+        "201":
+          description: Customer record added successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+        "500":
+          description: Internal server error
+      summary: Create a new customer
+      tags:
+      - customers
   /getCourts:
     get:
       consumes:
