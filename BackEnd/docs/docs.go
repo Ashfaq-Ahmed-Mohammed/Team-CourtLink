@@ -15,6 +15,103 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/CreateBooking": {
+            "post": {
+                "description": "Creates a new booking after validating the existence of the customer, sport, and court.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "Create a new booking",
+                "parameters": [
+                    {
+                        "description": "Booking data",
+                        "name": "booking",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.Bookings"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Booking record added successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Customer, sport, or court not found",
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/Customer": {
+            "post": {
+                "description": "Adds a new customer to the database if they do not already exist.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Create a new customer",
+                "parameters": [
+                    {
+                        "description": "Customer data",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.Customer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer already exists"
+                    },
+                    "201": {
+                        "description": "Customer record added successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/UpdateCourtSlot": {
             "put": {
                 "description": "Toggles the availability of a court time slot. If the slot is booked, it is freed; if it is free, it is booked.",
@@ -63,50 +160,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/DataBase.ErrorResponse"
                         }
-                    }
-                }
-            }
-        },
-        "/customer": {
-            "post": {
-                "description": "Adds a new customer to the database if they do not already exist.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "customers"
-                ],
-                "summary": "Create a new customer",
-                "parameters": [
-                    {
-                        "description": "Customer data",
-                        "name": "customer",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/DataBase.Customer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Customer already exists"
-                    },
-                    "201": {
-                        "description": "Customer record added successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body"
-                    },
-                    "500": {
-                        "description": "Internal server error"
                     }
                 }
             }
@@ -160,6 +213,64 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "DataBase.Bookings": {
+            "type": "object",
+            "properties": {
+                "Booking_ID": {
+                    "type": "integer"
+                },
+                "Booking_Status": {
+                    "type": "string"
+                },
+                "Booking_Time": {
+                    "type": "string"
+                },
+                "Court_ID": {
+                    "type": "integer"
+                },
+                "Customer_ID": {
+                    "type": "integer"
+                },
+                "Sport_ID": {
+                    "type": "integer"
+                },
+                "court": {
+                    "$ref": "#/definitions/DataBase.Court"
+                },
+                "customer": {
+                    "$ref": "#/definitions/DataBase.Customer"
+                },
+                "sport": {
+                    "$ref": "#/definitions/DataBase.Sport"
+                }
+            }
+        },
+        "DataBase.Court": {
+            "type": "object",
+            "properties": {
+                "Court_ID": {
+                    "type": "integer"
+                },
+                "Court_Location": {
+                    "type": "string"
+                },
+                "Court_Name": {
+                    "type": "string"
+                },
+                "Court_Status": {
+                    "type": "integer"
+                },
+                "Sport_id": {
+                    "type": "integer"
+                },
+                "court_Capacity": {
+                    "type": "integer"
+                },
+                "sport": {
+                    "$ref": "#/definitions/DataBase.Sport"
+                }
+            }
+        },
         "DataBase.CourtAvailability": {
             "type": "object",
             "properties": {
@@ -221,6 +332,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "DataBase.Sport": {
+            "type": "object",
+            "properties": {
+                "Sport_ID": {
+                    "type": "integer"
+                },
+                "Sport_name": {
+                    "type": "string"
+                },
+                "sport_Description": {
                     "type": "string"
                 }
             }
