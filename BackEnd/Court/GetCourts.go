@@ -7,6 +7,18 @@ import (
 	"net/http"
 )
 
+// GetCourt retrieves available courts for a given sport.
+//
+// @Summary Get court availability
+// @Description Fetches courts based on the selected sport and provides their availability status along with time slots.
+// @Tags courts
+// @Accept  json
+// @Produce  json
+// @Param  sport query string true "Sport name"
+// @Success 200 {array} DataBase.CourtAvailability "List of available courts with time slots"
+// @Failure 400 {object} DataBase.ErrorResponse "Missing 'sport' query parameter"
+// @Failure 404 {object} DataBase.ErrorResponse "Sport not found or no courts available"
+// @Router /getCourts [get]
 func GetCourt(w http.ResponseWriter, r *http.Request) {
 	var sportselection DataBase.SportSelection
 	var sport DataBase.Sport
@@ -18,13 +30,12 @@ func GetCourt(w http.ResponseWriter, r *http.Request) {
 	var courtData []CourtInfo
 	sports := r.URL.Query().Get("sport")
 
-	// Validate the parameter
 	if sports == "" {
 		http.Error(w, "Missing 'sport' query parameter", http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("✅ Sport Selection:", sports) // Debugging log
+	fmt.Println("Sport Selection:", sports)
 
 	if err := DataBase.DB.Where("Sport_name = ?", sports).First(&sport).Error; err != nil {
 		fmt.Println("Sport not found:", err)
@@ -41,13 +52,11 @@ func GetCourt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract court IDs for time slot retrieval
 	var courtIDs []uint
 	for _, court := range courtData {
 		courtIDs = append(courtIDs, court.CourtID)
 	}
 
-	// Retrieve all time slots using **Court_ID** in a **single batch query**
 	var courtTimeSlots []DataBase.Court_TimeSlots
 	if err := DataBase.DB.
 		Where("Court_ID IN (?)", courtIDs).
@@ -57,13 +66,11 @@ func GetCourt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a map of Court_ID -> Court_TimeSlots for quick lookup
 	courtTimeSlotMap := make(map[uint]DataBase.Court_TimeSlots)
 	for _, slot := range courtTimeSlots {
 		courtTimeSlotMap[slot.Court_ID] = slot
 	}
 
-	// Process data efficiently and return **Court_ID, Court_Name, Court_Status, and Slots**
 	var courts []DataBase.CourtAvailability
 	for _, court := range courtData {
 		timeSlot, exists := courtTimeSlotMap[court.CourtID]

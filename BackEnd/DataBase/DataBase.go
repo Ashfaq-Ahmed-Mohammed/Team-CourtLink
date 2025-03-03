@@ -8,6 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
 type SportSelection struct {
 	Sport string `json:"sport"`
 }
