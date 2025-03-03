@@ -1,36 +1,29 @@
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { Component } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';  // Import AuthService
-import { AsyncPipe, NgIf } from '@angular/common';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';  // Import DomSanitizer
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
+import { HttpClient, HttpHeaders } from '@angular/common/http';  // Import HttpClient and HttpHeaders
 
 @Component({
   selector: 'app-navbar',
-  imports: [MatMenuModule, MatIconModule, NgIf, AsyncPipe], // Keep the imports as they were
+  imports: [MatIconModule, CommonModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
+export class NavbarComponent{
 
-export class NavbarComponent {
   constructor(
     public auth: AuthService,
-    private sanitizer: DomSanitizer  // Inject DomSanitizer
+    private http: HttpClient // Inject HttpClient
   ) {}
 
+  // The login method will trigger fetching users and posting data.
   login() {
-    this.auth.loginWithRedirect();
-  }
-  
-  logout() {
-    this.auth.logout({ logoutParams: { federated: true } });
+    this.auth.loginWithRedirect(); // Trigger Auth0 login and once successful, send user data
   }
 
-  // Method to sanitize the image URL
-  sanitizeUrl(url: string): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(url);
+  // Logout method
+  logout() {
+    this.auth.logout();
   }
 }
-
-
-
