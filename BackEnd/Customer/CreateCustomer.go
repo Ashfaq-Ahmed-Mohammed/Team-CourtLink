@@ -17,7 +17,7 @@ import (
 // @Success 200 "Customer already exists"
 // @Failure 400 "Invalid request body"
 // @Failure 500 "Internal server error"
-// @Router /customer [post]
+// @Router /Customer [post]
 func CreateCustomer(w http.ResponseWriter, r *http.Request) {
 	var c DataBase.Customer
 
