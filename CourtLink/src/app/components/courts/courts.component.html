@@ -1,27 +1,71 @@
+<!-- courts.component.html -->
 <div class="p-10 min-h-screen bg-gradient-to-b from-[#005B8D] to-[#F26A2E] font-sans">
-  <!-- Dynamically show the selected sport -->
-  <div class="text-slate-200">
-    <h2 class="text-4xl font-bold mb-6 text-center">
-      AVAILABLE <span class="text-slate-200 uppercase">{{ selectedSport() }}</span> COURTS
-    </h2>
+  <!-- Header for the selected sport -->
+  <div class="text-center text-4xl font-bold text-white mb-8">
+    AVAILABLE {{ selectedSport() | uppercase }} COURTS
   </div>
 
-  <!-- Loading or No Courts Available -->
+  <!-- Show a message if no courts are loaded -->
   <div *ngIf="courts().length === 0" class="text-center text-white text-lg">
     No courts available or loading...
   </div>
 
-  <!-- Court Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-    <div *ngFor="let court of courts()" class="relative group overflow-hidden rounded-xl shadow-lg border border-gray-200">
+  <!-- Court Grid (Cards) -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div *ngFor="let court of courts()" 
+         class="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-stretch gap-4">
       
-      <!-- Court Image -->
-      <img [src]="court.image" alt="{{ court.name }}" class="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105">
+      <!-- LEFT COLUMN: Court Info & Image -->
+      <div class="flex-1 flex flex-col gap-4">
+        <!-- Court Header (Name & Availability) -->
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800">
+              {{ court.name }}
+            </h2>
+            <p class="text-sm text-gray-500">
+              {{ court.type }}
+            </p>
+          </div>
+          <div>
+            <!-- Availability label: green if status=1, red if status=0 -->
+            <span class="px-3 py-1 text-sm rounded-full"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': court.status === 1,
+                    'bg-red-100 text-red-800': court.status === 0
+                  }">
+              {{ getAvailabilityLabel(court) }}
+            </span>
+          </div>
+        </div>
 
-      <!-- Overlay Effect on Hover -->
-      <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition-all flex flex-col justify-end p-4 text-white">
-        <h3 class="text-lg font-semibold">{{ court.name }}</h3>
-        <p class="text-sm">{{ court.location }}</p>
+        <!-- Court Image (Fixed height to maintain consistent sizing) -->
+        <div class="w-full h-40 bg-gray-200 rounded-md overflow-hidden">
+          <img [src]="court.image" 
+               alt="{{ court.name }}" 
+               class="object-cover w-full h-full" />
+        </div>
+
+        <!-- Additional Info (Location, Floor, Surface, Capacity) -->
+        <div class="text-gray-700 text-sm space-y-1">
+          
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Time Slots -->
+      <div class="flex-1 flex flex-col">
+        <div class="grid grid-cols-3 gap-2">
+          <button *ngFor="let time of timeSlots"
+                  (click)="isSlotAvailable(court, time) && selectTime(court, time)"
+                  class="border rounded-md px-2 py-1 text-sm font-medium focus:outline-none transition-colors"
+                  [disabled]="!isSlotAvailable(court, time)"
+                  [ngClass]="{
+                    'bg-green-500 text-white hover:bg-green-600': isSlotAvailable(court, time),
+                    'bg-gray-200 text-gray-500 cursor-not-allowed': !isSlotAvailable(court, time)
+                  }">
+            {{ time }}
+          </button>
+        </div>
       </div>
 
     </div>

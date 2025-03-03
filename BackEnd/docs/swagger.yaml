@@ -1,5 +1,43 @@
 basePath: /
 definitions:
+  DataBase.Bookings:
+    properties:
+      Booking_ID:
+        type: integer
+      Booking_Status:
+        type: string
+      Booking_Time:
+        type: string
+      Court_ID:
+        type: integer
+      Customer_ID:
+        type: integer
+      Sport_ID:
+        type: integer
+      court:
+        $ref: '#/definitions/DataBase.Court'
+      customer:
+        $ref: '#/definitions/DataBase.Customer'
+      sport:
+        $ref: '#/definitions/DataBase.Sport'
+    type: object
+  DataBase.Court:
+    properties:
+      Court_ID:
+        type: integer
+      Court_Location:
+        type: string
+      Court_Name:
+        type: string
+      Court_Status:
+        type: integer
+      Sport_id:
+        type: integer
+      court_Capacity:
+        type: integer
+      sport:
+        $ref: '#/definitions/DataBase.Sport'
+    type: object
   DataBase.CourtAvailability:
     properties:
       CourtID:
@@ -26,9 +64,29 @@ definitions:
       Sport_name:
         type: string
     type: object
+  DataBase.Customer:
+    properties:
+      Contact:
+        type: string
+      Customer_ID:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+    type: object
   DataBase.ErrorResponse:
     properties:
       message:
+        type: string
+    type: object
+  DataBase.Sport:
+    properties:
+      Sport_ID:
+        type: integer
+      Sport_name:
+        type: string
+      sport_Description:
         type: string
     type: object
 host: localhost:8080
@@ -38,6 +96,71 @@ info:
   title: Court Booking API
   version: "1.0"
 paths:
+  /CreateBooking:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new booking after validating the existence of the customer,
+        sport, and court.
+      parameters:
+      - description: Booking data
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/DataBase.Bookings'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Booking record added successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/DataBase.ErrorResponse'
+        "404":
+          description: Customer, sport, or court not found
+          schema:
+            $ref: '#/definitions/DataBase.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/DataBase.ErrorResponse'
+      summary: Create a new booking
+      tags:
+      - bookings
+  /Customer:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new customer to the database if they do not already exist.
+      parameters:
+      - description: Customer data
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/DataBase.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Customer already exists
+        "201":
+          description: Customer record added successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+        "500":
+          description: Internal server error
+      summary: Create a new customer
+      tags:
+      - customers
   /UpdateCourtSlot:
     put:
       consumes:

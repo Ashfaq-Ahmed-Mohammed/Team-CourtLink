@@ -6,6 +6,18 @@ import (
 	"net/http"
 )
 
+// CreateBooking creates a new booking after validating customer, sport, and court.
+// @Summary Create a new booking
+// @Description Creates a new booking after validating the existence of the customer, sport, and court.
+// @Tags bookings
+// @Accept json
+// @Produce json
+// @Param  booking body DataBase.Bookings true "Booking data"
+// @Success 201 {object} map[string]interface{} "Booking record added successfully"
+// @Failure 400 {object} DataBase.ErrorResponse "Invalid request body"
+// @Failure 404 {object} DataBase.ErrorResponse "Customer, sport, or court not found"
+// @Failure 500 {object} DataBase.ErrorResponse "Internal server error"
+// @Router /CreateBooking [post]
 func CreateBooking(w http.ResponseWriter, r *http.Request) {
 	var b DataBase.Bookings
 
