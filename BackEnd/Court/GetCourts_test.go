@@ -28,18 +28,15 @@ func TestGetCourt(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to connect to test database: %v", err)
 	}
-
 	DataBase.DB = db
 
-	// Create a test sport
+	// Seed test data
 	testSport := DataBase.Sport{Sport_ID: 1, Sport_name: "tennis"}
 	db.Create(&testSport)
 
-	// Create a test court
 	testCourt := DataBase.Court{Court_ID: 1, Court_Name: "Court A", Court_Status: 1, Sport_id: 1}
 	db.Create(&testCourt)
 
-	// Create a test time slot
 	testTimeSlot := DataBase.Court_TimeSlots{
 		Court_ID:   1,
 		Slot_08_09: 1,
@@ -55,30 +52,60 @@ func TestGetCourt(t *testing.T) {
 	}
 	db.Create(&testTimeSlot)
 
-	r, err := http.NewRequest("GET", "/getCourts?sport=tennis", nil)
-	if err != nil {
-		t.Fatalf("Could not create request: %v", err)
-	}
-	w := httptest.NewRecorder()
-	GetCourt(w, r)
-
-	resp := w.Result()
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("Error: %v", resp.Status)
-	}
-
-	var courts []DataBase.CourtAvailability
-	if err := json.NewDecoder(resp.Body).Decode(&courts); err != nil {
-		t.Errorf("Error: %v", err)
+	tests := []struct {
+		name           string
+		query          string
+		expectedCode   int
+		expectedCourts int
+	}{
+		{"Valid sport with court", "/getCourts?sport=tennis", http.StatusOK, 1},
+		{"Invalid sport", "/getCourts?sport=badminton", http.StatusNotFound, 0},
+		{"Missing sport param", "/getCourts", http.StatusBadRequest, 0},
+		{"Sport with no courts", "/getCourts?sport=squash", http.StatusNotFound, 0},
+		{"Courts exist but no timeslots", "/getCourts?sport=football", http.StatusNotFound, 0},
 	}
 
-	if len(courts) == 0 {
-		t.Errorf("No Courts displayed")
-	}
+	// Create a sport with no courts
+	testSportNoCourts := DataBase.Sport{Sport_ID: 2, Sport_name: "squash"}
+	db.Create(&testSportNoCourts)
 
-	if courts[0].CourtID != 1 || !strings.Contains(courts[0].CourtName, "Court A") {
-		t.Errorf("Unexpected court data: %v", courts[0])
+	// Create a sport with a court but no timeslots
+	testSportNoSlots := DataBase.Sport{Sport_ID: 3, Sport_name: "football"}
+	db.Create(&testSportNoSlots)
+	testCourtNoSlots := DataBase.Court{Court_ID: 2, Court_Name: "Court B", Court_Status: 1, Sport_id: 3}
+	db.Create(&testCourtNoSlots)
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			req, err := http.NewRequest("GET", tc.query, nil)
+			if err != nil {
+				t.Fatalf("Could not create request: %v", err)
+			}
+
+			w := httptest.NewRecorder()
+			GetCourt(w, req)
+
+			resp := w.Result()
+			defer resp.Body.Close()
+
+			if resp.StatusCode != tc.expectedCode {
+				t.Errorf("Expected status %d, got %d", tc.expectedCode, resp.StatusCode)
+			}
+
+			if resp.StatusCode == http.StatusOK {
+				var courts []DataBase.CourtAvailability
+				if err := json.NewDecoder(resp.Body).Decode(&courts); err != nil {
+					t.Errorf("Failed to decode response: %v", err)
+				}
+
+				if len(courts) != tc.expectedCourts {
+					t.Errorf("Expected %d courts, got %d", tc.expectedCourts, len(courts))
+				}
+
+				if tc.expectedCourts > 0 && (courts[0].CourtID != 1 || !strings.Contains(courts[0].CourtName, "Court A")) {
+					t.Errorf("Unexpected court data: %v", courts[0])
+				}
+			}
+		})
 	}
 }
