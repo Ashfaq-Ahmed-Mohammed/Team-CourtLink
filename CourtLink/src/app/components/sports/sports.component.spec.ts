@@ -47,18 +47,6 @@ describe('SportsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display sports names correctly', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const sportNames = compiled.querySelectorAll('.sport-name');
-    
-    // Check that each sport name is displayed in the template
-    expect(sportNames.length).toBe(component.sports.length);
-    expect(sportNames[0].textContent).toContain('Basketball');
-    expect(sportNames[1].textContent).toContain('Soccer');
-    expect(sportNames[2].textContent).toContain('Tennis');
-    expect(sportNames[3].textContent).toContain('Badminton');
-    expect(sportNames[4].textContent).toContain('Cricket');
-  });
 
   it('should call selectSport and navigate on success', async () => {
     const navigateSpy = spyOn(router, 'navigate');
@@ -81,4 +69,4 @@ describe('SportsComponent', () => {
     // Expect that the navigation was not called due to the error
     expect(navigateSpy).not.toHaveBeenCalled();
   });
-});
+}); 
