@@ -38,9 +38,43 @@
 ## Work planned but not completed as part of Sprint 2:
 
 - **Implement booking functionality**
-  - **Reason**: The integration of the front end to the backend of current APIs and features took up most of the time, However,we have the APIS to handle the booking process ready.
+  - **Reason**: The integration of the front end to the backend of current APIs and features took up most of the time. However,we have the APIS to handle the booking process ready.
 
+## Unit Test Case Results:
 
+### BACKEND
+
+- GetCourt_test and UpdateCourts_test Unit TestCase Results
+
+![Test Case Results](Pics/Court_TestCases.jpeg)
+
+- CreateCustomer_test Unit TestCase Results
+
+![Test Case Results](Pics/CreateCustomer_TestCase.jpeg)
+
+- CreateBooking_test Unit TestCase Results
+
+![Test Case Results](Pics/CreateBooking_TestCase.jpeg)
+
+### FRONTEND
+
+- Courts Component and Navbar Component Unit TestCase Results
+
+![Test Case Results](Pics/CourtNavbarComponent_TestCases.jpeg)
+
+- Sports Component Unit TestCase Results
+
+![Test Case Results](Pics/SportComponent_TestCase.png)
+
+## Cypress Test FRONTEND
+
+Cypress Test Setup
+
+![Test Case Results](Pics/CypressTest_Setup.jpeg)
+
+Cypress Test Result
+
+![Test Case Results](Pics/CypressTest_Result.jpeg)
 
 ## BackEnd API Documentation (Swagger)
 
@@ -225,5 +259,4 @@ Fetches courts based on the selected sport and provides their availability statu
 | sport_Description | string |  | No |
 
 ### Video Recordings
-- [FrontEnd Recording](https://drive.google.com/file/d/1ljUqdiY-nMspxK2W6NZ-VHV2VZV7shOx/view?usp=sharing)
-- [BackEnd Recording](https://drive.google.com/file/d/1iWfi_NnLlPfjPQI-3P1WekB22cshHVUZ/view?usp=drive_link)
+- [Sprint 2 Video Recording](https://drive.google.com/file/d/1lv_fPE8VRDVc5dtWKcTPM0qKLrOx4Q8K/view?usp=drive_link)
