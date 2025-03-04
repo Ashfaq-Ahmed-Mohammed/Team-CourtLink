@@ -32,6 +32,11 @@
 - Courts component:
   - Renders the courts component (component instance exists and a container element is rendered)
   - Displays "No courts available or loading..." when courts are empty
+- Sports component:
+  - Should render the component without errors.
+  - Should display sport names correctly.
+  - Should call SelectSport and navigate successfully.
+  - Should not navigate when wrong sport is given.
 - Collaborated with BackEnd team on Integration.
 
 
