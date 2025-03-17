@@ -28,29 +28,21 @@ export class CourtsComponent {
   // Signals
   selectedSport = signal<string>('');
   courts = signal<Court[]>([]);
-  selectedTime = signal<string>('');  // Track a globally selected time if needed
+  selectedTime = signal<string>('');  // Track selected time slot
+  selectedBooking = signal<{ court: Court, time: string } | null>(null);  // Booking details
 
-  // Time labels from 8 AM to 5 PM (or 6 PM)
   timeSlots: string[] = [];
 
   constructor(private route: ActivatedRoute, private apiService: ApiService) {
-    // Generate times from 8 AM (8) to 6 PM (18) => 10 slots
+    // Generate time slots from 8 AM to 6 PM
     for (let hour = 8; hour < 18; hour++) {
-      // Convert 24-hour format to a user-friendly label
-      if (hour < 12) {
-        this.timeSlots.push(`${hour} AM`);
-      } else if (hour === 12) {
-        this.timeSlots.push(`12 PM`);
-      } else {
-        this.timeSlots.push(`${hour - 12} PM`);
-      }
+      this.timeSlots.push(hour < 12 ? `${hour} AM` : hour === 12 ? `12 PM` : `${hour - 12} PM`);
     }
 
-    // Reactive effect to fetch courts based on the route param
+    // Fetch courts when the sport changes
     effect(() => {
       const sport = this.route.snapshot.paramMap.get('sport') || '';
       this.selectedSport.set(sport);
-
       if (sport) {
         this.fetchCourts(sport);
       }
@@ -60,7 +52,6 @@ export class CourtsComponent {
   fetchCourts(sport: string): void {
     this.apiService.getCourts(sport).subscribe({
       next: (data) => {
-        // Handle the response whether it's an array or an object with 'courts'
         let courtsData: any[] = [];
         if (data && data.courts && Array.isArray(data.courts)) {
           courtsData = data.courts;
@@ -68,13 +59,17 @@ export class CourtsComponent {
           courtsData = data;
         }
 
-        // Map to our extended Court interface
         const mapped = courtsData.map((c: any, i: number) => ({
           name: c.CourtName || `Basketball Court #${i + 1}`,
           id: c.CourtID || 0,
           status: c.CourtStatus ?? 1,     // 1 => available by default
           slots: c.Slots || [],
           image: c.Image || 'https://i.bleacherreport.net/images/team_logos/328x328/florida_gators_football.png?canvas=492,328',
+          location: c.Location || 'Unknown',
+          floor: c.Floor || 'N/A',
+          surface: c.Surface || 'Unknown',
+          capacity: c.Capacity || 'Unknown',
+          type: c.Type || 'Unknown'
         })) as Court[];
 
         this.courts.set(mapped);
@@ -84,17 +79,17 @@ export class CourtsComponent {
   }
 
   /**
-   * Called when a time button is clicked for a specific court/time.
-   * Only invoked if the slot is available (1).
+   * Selects a time slot and prepares the booking modal.
    */
   selectTime(court: Court, time: string): void {
-    // Example: Log the selection (extend this to handle reservations)
-    console.log(`Selected ${time} for ${court.name}`);
-    this.selectedTime.set(time);
+    if (this.isSlotAvailable(court, time)) {
+      this.selectedTime.set(time);
+      this.selectedBooking.set({ court, time });
+    }
   }
 
   /**
-   * Utility to determine if a given time is available for a court.
+   * Checks if the time slot is available for a court.
    */
   isSlotAvailable(court: Court, time: string): boolean {
     const index = this.timeSlots.indexOf(time);
@@ -102,9 +97,41 @@ export class CourtsComponent {
   }
 
   /**
-   * Returns a text label (e.g. "Available" / "Not Available") based on court.status.
+   * Returns a label based on court availability.
    */
   getAvailabilityLabel(court: Court): string {
     return court.status === 1 ? 'Available' : 'Not Available';
+  }
+
+  /**
+   * Cancels the booking process.
+   */
+  cancelBooking(): void {
+    this.selectedBooking.set(null);
+  }
+
+  /**
+   * Confirms booking and sends data to backend.
+   */
+  confirmBooking(): void {
+    const booking = this.selectedBooking();
+    if (!booking) return;
+
+    const bookingData = {
+      sport: this.selectedSport(),
+      court: booking.court.name,
+      time: booking.time,
+      user: "test-user@example.com" // Replace with actual user data (Auth0 integration)
+    };
+
+    this.apiService.bookCourt(bookingData).subscribe({
+      next: () => {
+        alert('Booking successful!');
+        this.selectedBooking.set(null);
+      },
+      error: () => {
+        alert('Booking failed. Try again.');
+      }
+    });
   }
 }
