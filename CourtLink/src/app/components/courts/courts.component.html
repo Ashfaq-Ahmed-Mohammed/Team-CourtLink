@@ -45,11 +45,6 @@
                alt="{{ court.name }}" 
                class="object-cover w-full h-full" />
         </div>
-
-        <!-- Additional Info (Location, Floor, Surface, Capacity) -->
-        <div class="text-gray-700 text-sm space-y-1">
-          
-        </div>
       </div>
 
       <!-- RIGHT COLUMN: Time Slots -->
@@ -67,7 +62,34 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
+<!-- Booking Confirmation Modal -->
+<div *ngIf="selectedBooking() as booking" 
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white p-8 rounded-lg shadow-md w-[32rem]">
+    <h2 class="text-xl font-bold mb-4">Confirm Your Booking</h2>
+    
+    <p class="text-gray-700">
+      <strong>Sport:</strong> {{ selectedSport() }}
+    </p>
+    <p class="text-gray-700">
+      <strong>Court:</strong> {{ booking.court.name }}
+    </p>
+    <p class="text-gray-700">
+      <strong>Time Slot:</strong> {{ booking.time }}
+    </p>
+
+    <!-- Confirm & Cancel Buttons -->
+    <div class="flex justify-end gap-2 mt-4">
+      <button (click)="confirmBooking()" class="bg-green-500 text-white px-4 py-2 rounded-md">
+        Confirm
+      </button>
+      <button (click)="cancelBooking()" class="bg-gray-300 px-4 py-2 rounded-md">
+        Cancel
+      </button>
     </div>
   </div>
 </div>

@@ -14,4 +14,9 @@ export class ApiService {
     const params = new HttpParams().set('sport', sport);
     return this.http.get<{ courts: any[] }>(`${this.BASE_URL}/getCourts`, { params });
   }
+
+  // New method added for booking functionality
+  bookCourt(bookingData: any): Observable<any> {
+    return this.http.post(`${this.BASE_URL}/bookings`, bookingData);
+  }
 }
