@@ -76,6 +76,15 @@ func UpdateCourtSlotandBooking(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var customer DataBase.Customer
+	if err := tx.Where("email = ?", updateRequest.Customer_email).First(&customer).Error; err != nil {
+		tx.Rollback()
+		if err == gorm.ErrRecordNotFound {
+			http.Error(w, "Customer not found in the database", http.StatusNotFound)
+		} else {
+			http.Error(w, "Failed to fetch customer", http.StatusInternalServerError)
+		}
+		return
+	}
 
 	// Lookup the sport by name.
 	var sport DataBase.Sport
