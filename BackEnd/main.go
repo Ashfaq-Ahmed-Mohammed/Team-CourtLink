@@ -80,7 +80,7 @@ func main() {
 
 	r.HandleFunc("/getCourts", Court.GetCourt).Methods("GET", "OPTIONS")
 	r.HandleFunc("/Customer", Customer.CreateCustomer).Methods("POST", "OPTIONS")
-	r.HandleFunc("/UpdateCourtSlot", Court.UpdateCourtSlot).Methods("PUT", "OPTIONS")
+	r.HandleFunc("/UpdateCourtSlotandBooking", Court.UpdateCourtSlotandBooking).Methods("PUT", "OPTIONS")
 	r.HandleFunc("/CreateBooking", Bookings.CreateBooking).Methods("POST", "OPTIONS")
 
 	newroute := r.PathPrefix("/api").Subrouter()

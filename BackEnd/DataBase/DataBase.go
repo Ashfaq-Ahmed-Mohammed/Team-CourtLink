@@ -2,7 +2,6 @@ package DataBase
 
 import (
 	"fmt"
-	"time"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -17,11 +16,12 @@ type SportSelection struct {
 }
 
 type CourtUpdate struct {
-	Court_Name  string `json:"Court_Name"`
-	Court_ID    uint   `json:"Court_ID"`
-	Slot_Index  int    `json:"Slot_Index"`
-	Customer_ID uint   `json:"Customer_ID"`
-	Sport_name  string `json:"Sport_name"`
+	Court_Name     string `json:"Court_Name"`
+	Court_ID       uint   `json:"Court_ID"`
+	Slot_Index     int    `json:"Slot_Index"`
+	Customer_email string `json:"Customer_email"`
+	Sport_name     string `json:"Sport_name"`
+	Sport_ID       string `json:"Sport_ID"`
 }
 
 type CourtAvailability struct {
@@ -72,12 +72,12 @@ type Court_TimeSlots struct {
 	CourtIDRef *Court `gorm:"foreignKey:Court_ID; references:Court_ID"`
 }
 type Bookings struct {
-	Booking_ID     uint      `gorm:"column:Booking_ID;primaryKey;autoIncrement" json:"Booking_ID"`
-	Customer_ID    uint      `gorm:"column:Customer_ID;index;not null" json:"Customer_ID"`
-	Sport_ID       uint      `gorm:"column:Sport_ID;index;not null" json:"Sport_ID"`
-	Court_ID       uint      `gorm:"column:Court_ID;index;not null" json:"Court_ID"`
-	Booking_Status string    `gorm:"column:Booking_Status;not null" json:"Booking_Status"`
-	Booking_Time   time.Time `gorm:"column:Booking_Time;not null" json:"Booking_Time"`
+	Booking_ID     uint   `gorm:"column:Booking_ID;primaryKey;autoIncrement" json:"Booking_ID"`
+	Customer_ID    uint   `gorm:"column:Customer_ID;index;not null" json:"Customer_ID"`
+	Sport_ID       uint   `gorm:"column:Sport_ID;index;not null" json:"Sport_ID"`
+	Court_ID       uint   `gorm:"column:Court_ID;index;not null" json:"Court_ID"`
+	Booking_Status string `gorm:"column:Booking_Status;not null" json:"Booking_Status"`
+	Booking_Time   int    `gorm:"column:Booking_Time;not null" json:"Booking_Time"`
 
 	Customer Customer `gorm:"foreignKey:Customer_ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Sport    Sport    `gorm:"foreignKey:Sport_ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
