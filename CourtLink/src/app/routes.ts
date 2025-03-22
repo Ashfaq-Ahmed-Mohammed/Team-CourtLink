@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { SportsComponent } from './components/sports/sports.component';
 import { CourtsComponent } from './components/courts/courts.component';
+import { AdminComponent } from './components/admin/admin.component'; // <-- add this
 
 export const routes: Routes = [
-  { path: '', component: SportsComponent }, // Landing page with sports tiles
-  { path: 'courts/:sport', component: CourtsComponent }, // Courts page based on selected sport
+  { path: '', component: SportsComponent },
+  { path: 'courts/:sport', component: CourtsComponent },
+  { path: 'admin', component: AdminComponent }, // <-- new admin route
 ];
