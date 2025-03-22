@@ -15,6 +15,10 @@ type SportSelection struct {
 	Sport string `json:"sport"`
 }
 
+type CancelRequest struct {
+	Booking_ID uint `json:"Booking_ID"`
+}
+
 type CourtUpdate struct {
 	Court_Name     string `json:"Court_Name"`
 	Court_ID       uint   `json:"Court_ID"`
