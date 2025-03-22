@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SportsComponent } from './sports.component';
-import { ApiService } from './../../services/api.service';  // Import ApiService
+import { ApiService } from './../../services/api.service';  
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 
-// Mock ApiService for testing
+
 class MockApiService {
   getCourts(sport: string) {
     if (sport === 'Basketball') {
-      return of([]);  // Simulate success response for Basketball
+      return of([]);  
     }
-    return throwError('Error fetching courts');  // Simulate error for other sports
+    return throwError('Error fetching courts');  
   }
 }
 
@@ -25,12 +25,12 @@ describe('SportsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        HttpClientModule,    // Import HttpClientModule
-        RouterTestingModule, // Import RouterTestingModule
-        SportsComponent      // Import the standalone component
+        HttpClientModule,    
+        RouterTestingModule, 
+        SportsComponent      
       ],
       providers: [
-        { provide: ApiService, useClass: MockApiService },  // Use MockApiService
+        { provide: ApiService, useClass: MockApiService },  
       ],
     }).compileComponents();
   });
@@ -38,8 +38,8 @@ describe('SportsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SportsComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);  // Inject router
-    apiService = TestBed.inject(ApiService);  // Inject ApiService
+    router = TestBed.inject(Router);  
+    apiService = TestBed.inject(ApiService);  
     fixture.detectChanges();
   });
 
@@ -52,10 +52,10 @@ describe('SportsComponent', () => {
     const navigateSpy = spyOn(router, 'navigate');
     const sportName = 'Basketball';
 
-    // Call the selectSport method
+
     await component.selectSport(sportName);
 
-    // Expect the API service to be called and navigation to happen
+
     expect(navigateSpy).toHaveBeenCalledWith(['/courts', sportName.toLowerCase()]);
   });
 
@@ -63,10 +63,10 @@ describe('SportsComponent', () => {
     const navigateSpy = spyOn(router, 'navigate');
     const sportName = 'Soccer';
 
-    // Call the selectSport method
+
     await component.selectSport(sportName);
 
-    // Expect that the navigation was not called due to the error
+
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 }); 
