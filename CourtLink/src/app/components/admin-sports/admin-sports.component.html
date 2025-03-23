@@ -1,0 +1,101 @@
+<!-- Admin Navbar -->
+<div class="-mt-20">
+    <nav class="bg-[#F26A2E] text-white px-6 py-4 h-17 flex items-center justify-between">
+      <a href="/" class="flex items-center">
+        <img
+          src="https://i.bleacherreport.net/images/team_logos/328x328/florida_gators_football.png?canvas=492,328"
+          alt="UF Logo"
+          class="h-12 mr-3"
+        />
+        <span class="text-xl font-bold">UFCourtLink</span>
+      </a>
+      <div class="text-xl font-bold text-[#005B8D]">ADMIN</div>
+    </nav>
+</div>
+  
+<!-- Page Wrapper -->
+<div class="w-full min-h-screen bg-[#fffaf0] px-10 pb-20">
+    <!-- Welcome Header -->
+    <div class="pt-11 text-[#005B8D]">
+      <div class="mb-4 text-left">
+        <h2 class="text-4xl font-bold inline-block pl-11">ALL SPORTS IN THE DATABASE</h2>
+        <div class="ml-10 w-[75%] h-2 bg-[#F26A2E] mt-4 mb-8"></div>
+      </div>
+    </div>
+
+    <!-- Sports Table -->
+    <div class="flex justify-center">
+      <table
+        mat-table
+        [dataSource]="sports"
+        class="!w-[60%] border-[6px] border-[#005B8D] rounded-lg"
+        style="background-color: #fffaf0; table-layout: fixed; border-collapse: collapse; width: 60% !important;"
+      >
+
+        <!-- S.No Column -->
+        <ng-container matColumnDef="sno">
+          <th mat-header-cell *matHeaderCellDef
+            class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">
+            S.NO.
+          </th>
+          <td mat-cell *matCellDef="let sport; let i = index"
+            class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- Sport Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef
+            class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">
+            SPORT NAME
+          </th>
+          <td mat-cell *matCellDef="let sport"
+            class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">
+            {{ sport.name }}
+          </td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef
+            class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">
+            ACTION
+          </th>
+          <td mat-cell *matCellDef="let sport"
+            class="text-center border-[3px] border-[#005B8D] px-4 py-2 text-lg">
+            <button
+              mat-raised-button
+              class="!bg-red-500 !text-white font-bold py-1 px-4 rounded-full shadow-none"
+            >
+              Delete
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Render Table -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-[#fffaf0]"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="bg-[#fffaf0] hover:bg-blue-50 transition last:border-b-[3px] last:border-[#005B8D]"></tr>
+      </table>
+    </div>
+
+    <!-- Add New Sport Button -->
+    <div class="flex justify-center mt-10">
+      <button
+        mat-raised-button
+        (click)="openAddSportDialog()"
+        class="!bg-green-600 hover:!bg-green-700 !text-white font-bold py-2 px-6 rounded-full shadow-md"
+      >
+        Add New Sport
+      </button>
+    </div>
+</div>
+
+<style>
+  ::ng-deep .mat-row:last-of-type {
+    border-bottom: 3px solid #005B8D !important;
+  }
+  ::ng-deep .mat-cell {
+    border-bottom: 3px solid #005B8D !important;
+  }
+</style>
