@@ -1,0 +1,40 @@
+<div class="p-6 w-full max-w-md bg-[#fffaf0] rounded-xl shadow-md">
+    <!-- Title -->
+    <h2 class="text-3xl font-bold text-[#005B8D] mb-6 text-center">Add New Court</h2>
+  
+    <!-- Court Name -->
+    <input
+      [(ngModel)]="courtName"
+      class="w-full bg-[#fffaf0] border-[3px] border-[#005B8D] rounded-md px-4 py-2 text-lg text-[#005B8D] focus:outline-none focus:ring-2 focus:ring-[#005B8D] mb-4"
+      type="text"
+      placeholder="Court Name"
+    />
+  
+    <!-- Sport Name -->
+    <input
+      [(ngModel)]="sportName"
+      class="w-full bg-[#fffaf0] border-[3px] border-[#005B8D] rounded-md px-4 py-2 text-lg text-[#005B8D] focus:outline-none focus:ring-2 focus:ring-[#005B8D]"
+      type="text"
+      placeholder="Sport Name"
+    />
+  
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-4 mt-6">
+      <button
+        mat-button
+        (click)="cancel()"
+        class="!bg-red-500 hover:!bg-red-600 !text-white font-bold px-6 py-2 rounded-md"
+      >
+        Cancel
+      </button>
+      <button
+        mat-button
+        (click)="confirm()"
+        [disabled]="!courtName.trim() || !sportName.trim()"
+        class="!bg-green-600 hover:!bg-green-700 !text-white font-bold px-6 py-2 rounded-md"
+      >
+        Confirm
+      </button>
+    </div>
+  </div>
+  
