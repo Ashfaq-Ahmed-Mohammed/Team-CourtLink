@@ -21,7 +21,7 @@ func ListBookings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type BookingResponse struct {
+	type bookingRaw struct {
 		BookingID     uint   `json:"booking_id"`
 		CourtName     string `json:"court_name"`
 		SportName     string `json:"sport_name"`
@@ -29,7 +29,8 @@ func ListBookings(w http.ResponseWriter, r *http.Request) {
 		BookingStatus string `json:"booking_status"`
 	}
 
-	var booked []BookingResponse
+	var bookingsRaw []bookingRaw
+
 	err = DataBase.DB.Raw(`
 		SELECT 
 			b.Booking_ID as booking_id, 
@@ -40,36 +41,49 @@ func ListBookings(w http.ResponseWriter, r *http.Request) {
 		FROM Bookings b
 		INNER JOIN Court c ON c.Court_ID = b.Court_ID
 		INNER JOIN Sport s ON s.Sport_ID = b.Sport_ID
-		WHERE b.Customer_ID = ? AND b.Booking_Status = ?`,
-		customer.Customer_ID, "booked").Scan(&booked).Error
+		WHERE b.Customer_ID = ?`,
+		customer.Customer_ID).Scan(&bookingsRaw).Error
 	if err != nil {
-		http.Error(w, "Database error while fetching booked bookings", http.StatusInternalServerError)
+		http.Error(w, "Database error while fetching bookings", http.StatusInternalServerError)
 		return
 	}
 
-	var cancelled []BookingResponse
-	err = DataBase.DB.Raw(`
-		SELECT 
-			b.Booking_ID as booking_id, 
-			c.Court_Name as court_name, 
-			s.Sport_name as sport_name, 
-			b.Booking_Time as slot_index, 
-			b.Booking_Status as booking_status
-		FROM Bookings b
-		INNER JOIN Court c ON c.Court_ID = b.Court_ID
-		INNER JOIN Sport s ON s.Sport_ID = b.Sport_ID
-		WHERE b.Customer_ID = ? AND b.Booking_Status = ?`,
-		customer.Customer_ID, "cancelled").Scan(&cancelled).Error
-	if err != nil {
-		http.Error(w, "Database error while fetching cancelled bookings", http.StatusInternalServerError)
-		return
+	slots := []string{
+		"8-9 AM",
+		"9-10 AM",
+		"10-11 AM",
+		"11-12 AM",
+		"12-1 PM",
+		"1-2 PM",
+		"2-3 PM",
+		"3-4 PM",
+		"4-5 PM",
+		"5-6 PM",
 	}
 
-	response := map[string]interface{}{
-		"booked":    booked,
-		"cancelled": cancelled,
+	type BookingResponse struct {
+		BookingID     uint   `json:"booking_id"`
+		CourtName     string `json:"court_name"`
+		SportName     string `json:"sport_name"`
+		SlotTime      string `json:"slot_time"`
+		BookingStatus string `json:"booking_status"`
+	}
+
+	var responseBookings []BookingResponse
+	for _, b := range bookingsRaw {
+		slotTime := ""
+		if b.SlotIndex >= 0 && b.SlotIndex < len(slots) {
+			slotTime = slots[b.SlotIndex]
+		}
+		responseBookings = append(responseBookings, BookingResponse{
+			BookingID:     b.BookingID,
+			CourtName:     b.CourtName,
+			SportName:     b.SportName,
+			SlotTime:      slotTime,
+			BookingStatus: b.BookingStatus,
+		})
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(responseBookings)
 }
