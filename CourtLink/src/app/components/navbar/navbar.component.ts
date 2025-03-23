@@ -2,11 +2,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
+import { MyBookingsComponent } from '../my-bookings/my-bookings.component';
+import { RouterModule } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';  // Import HttpClient and HttpHeaders
 
 @Component({
   selector: 'app-navbar',
-  imports: [MatIconModule, CommonModule],
+  standalone: true,
+  imports: [MatIconModule, CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })

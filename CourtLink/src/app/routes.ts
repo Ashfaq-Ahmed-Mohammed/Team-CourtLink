@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+/* import { Routes } from '@angular/router';
 import { SportsComponent } from './components/sports/sports.component';
 import { CourtsComponent } from './components/courts/courts.component';
 import { AdminComponent } from './components/admin/admin.component'; // <-- add this
@@ -8,3 +8,4 @@ export const routes: Routes = [
   { path: 'courts/:sport', component: CourtsComponent },
   { path: 'admin', component: AdminComponent }, // <-- new admin route
 ];
+ */

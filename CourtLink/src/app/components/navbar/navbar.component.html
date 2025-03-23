@@ -12,29 +12,37 @@
           <input type="text" placeholder="Search..." class="px-4 py-2 rounded-md text-gray-800 w-full placeholder-gray-500 pr-10">
     
           <!-- New Search Icon (SVG) -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-1/2 right-3 transform -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-1/2 right-3 transform -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 19l-4-4M12 5a7 7 0 11-7 7 7 7 0 017-7z"></path>
           </svg>
         </div>
       </div>
     </div>
 
-    <!-- User Profile Icon -->
-    <div class="absolute top-4 h-14 right-6 flex space-x-4">
+    <!-- User Profile Section with "My Bookings" button -->
+    <div class="absolute top-4 h-14 right-6 flex space-x-4 items-center">
+      
+      <!-- ✅ My Bookings Button -->
+      <a routerLink="/my-bookings"
+         class="bg-white text-[#005B8D] font-semibold px-4 py-2 rounded-full hover:bg-gray-200 transition duration-200 text-sm shadow">
+        My Bookings
+      </a>
+
+      <!-- Show profile icon if user is logged in -->
       <ng-container *ngIf="auth.user$ | async as user; else loggedOut">
         <button mat-icon-button (click)="logout()">
-          <!-- Check if the user has a picture -->
           <img *ngIf="user.picture; else defaultIcon" [src]="user.picture" [alt]="user.name" class="h-10 w-10 rounded-full">
-          
-          <!-- Fallback Green Icon if no picture is found -->
+
           <ng-template #defaultIcon>
-            <img src="https://via.placeholder.com/150/4CAF50/FFFFFF?text=No+Image" alt="Default Green Icon" class="h-10 w-10 rounded-full">
+            <img src="https://via.placeholder.com/150/4CAF50/FFFFFF?text=No+Image"
+                 alt="Default Green Icon"
+                 class="h-10 w-10 rounded-full">
           </ng-template>
         </button>
       </ng-container>
 
+      <!-- Show default icon if user is logged out -->
       <ng-template #loggedOut>
-        <!-- Default profile icon when not authenticated -->
         <button mat-icon-button (click)="login()">
           <mat-icon class="text-white">account_circle</mat-icon>
         </button>
