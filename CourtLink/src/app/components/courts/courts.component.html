@@ -68,7 +68,7 @@
 
 <!-- Booking Confirmation Modal -->
 <div *ngIf="selectedBooking() as booking" 
-     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
   <div class="bg-white p-8 rounded-lg shadow-md w-[32rem]">
     <h2 class="text-xl font-bold mb-4">Confirm Your Booking</h2>
     
@@ -87,9 +87,22 @@
       <button (click)="confirmBooking()" class="bg-green-500 text-white px-4 py-2 rounded-md">
         Confirm
       </button>
-      <button (click)="cancelBooking()" class="bg-gray-300 px-4 py-2 rounded-md">
+      <button (click)="closeModal()" class="bg-gray-300 px-4 py-2 rounded-md">
         Cancel
       </button>
     </div>
   </div>
 </div>
+
+<!-- ✅ Toast Notification: Appears after reload if booking was successful -->
+<!-- ✅ Toast Notification -->
+<!-- ✅ Booking Confirmation Banner Toast -->
+<div *ngIf="bookingSuccess()" 
+     class="fixed bottom-6 right-6 w-[22rem] md:w-[30rem] bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 transition-opacity duration-500">
+  <div class="flex items-center gap-2">
+    <span class="text-xl">✅</span>
+    <span class="text-sm font-medium">Booking confirmed successfully!</span>
+  </div>
+</div>
+
+
