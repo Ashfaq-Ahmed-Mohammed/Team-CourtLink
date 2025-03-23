@@ -1,0 +1,21 @@
+<!-- my-bookings.component.html -->
+<div class="p-10 min-h-screen bg-gradient-to-b from-[#005B8D] to-[#F26A2E] font-sans text-white">
+    <!-- Page Header -->
+    <h1 class="text-4xl font-bold mb-8 text-center">
+      My Bookings
+    </h1>
+  
+    <!-- No bookings case -->
+    <div *ngIf="bookings().length === 0" class="text-center text-lg text-white">
+      You have no bookings yet.
+    </div>
+  
+    <!-- Bookings List -->
+    <div *ngFor="let booking of bookings()" class="bg-white text-[#005B8D] rounded-lg p-6 mb-6 shadow-lg max-w-3xl mx-auto">
+      <p><strong>Sport:</strong> {{ booking.sport }}</p>
+      <p><strong>Court:</strong> {{ booking.court }}</p>
+      <p><strong>Time Slot:</strong> {{ booking.time }}</p>
+      <p><strong>Date:</strong> {{ booking.date }}</p>
+    </div>
+  </div>
+  
