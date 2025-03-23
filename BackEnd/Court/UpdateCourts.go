@@ -146,6 +146,12 @@ func CancelBookingandUpdateSlot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := tx.Model(&booking).UpdateColumn("Booking_Status", "Cancelled").Error; err != nil {
+		tx.Rollback()
+		http.Error(w, "Failed to update the booking status", http.StatusInternalServerError)
+		return
+	}
+
 	var timeSlot DataBase.Court_TimeSlots
 	if err := tx.Model(&DataBase.Court_TimeSlots{}).
 		Where("Court_ID = ?", booking.Court_ID).
