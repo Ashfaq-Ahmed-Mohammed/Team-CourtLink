@@ -85,6 +85,7 @@ func main() {
 	r.HandleFunc("/CreateBooking", Bookings.CreateBooking).Methods("POST", "OPTIONS")
 	r.HandleFunc("/CreateSport", Sport.CreateSport).Methods("POST", "OPTIONS")
 	r.HandleFunc("/ListSports", Sport.ListSports).Methods("GET", "OPTIONS")
+	r.HandleFunc("/ListCourts", Court.ListCourts).Methods("GET", "OPTIONS")
 	r.HandleFunc("/CancelBookingandUpdateSlot", Court.CancelBookingandUpdateSlot).Methods("PUT", "OPTIONS")
 	r.HandleFunc("/listBookings", Bookings.ListBookings).Methods("GET", "OPTIONS")
 
