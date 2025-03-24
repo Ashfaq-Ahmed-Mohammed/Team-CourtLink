@@ -10,14 +10,14 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideAuth0({
       domain: 'dev-7gppji8v3bdbsj6k.us.auth0.com',
-      clientId: 'K3yZGflpa3qLYWXQtrBUsNaO4xXrfwtv',
+      clientId: 'TqW28zdd6xCyQ9If2HU7nCo86rmvraC9',
       authorizationParams: {
-        redirect_uri: window.location.origin,
-        audience: 'https://dev-7gppji8v3bdbsj6k.us.auth0.com/api/v2/', // Audience set to your Auth0 API Identifier
-        scope: 'read:users write:users'  // Add the required scopes here
+        redirect_uri: window.location.origin, // Audience set to your Auth0 API Identifier
+        scope: 'openid profile email'  // Add the required scopes here
       }
     }),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient()
   ]
 }).catch(err => console.error(err));
+
