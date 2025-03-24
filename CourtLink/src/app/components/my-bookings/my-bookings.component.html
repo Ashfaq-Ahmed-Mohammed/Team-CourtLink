@@ -1,21 +1,48 @@
-<!-- my-bookings.component.html -->
 <div class="p-10 min-h-screen bg-gradient-to-b from-[#005B8D] to-[#F26A2E] font-sans text-white">
-    <!-- Page Header -->
-    <h1 class="text-4xl font-bold mb-8 text-center">
-      My Bookings
-    </h1>
-  
-    <!-- No bookings case -->
-    <div *ngIf="bookings().length === 0" class="text-center text-lg text-white">
-      You have no bookings yet.
-    </div>
-  
-    <!-- Bookings List -->
-    <div *ngFor="let booking of bookings()" class="bg-white text-[#005B8D] rounded-lg p-6 mb-6 shadow-lg max-w-3xl mx-auto">
-      <p><strong>Sport:</strong> {{ booking.sport }}</p>
-      <p><strong>Court:</strong> {{ booking.court }}</p>
-      <p><strong>Time Slot:</strong> {{ booking.time }}</p>
-      <p><strong>Date:</strong> {{ booking.date }}</p>
+  <!-- Page Header -->
+  <div class="p-6 -mt-5 text-white">
+    <div class="mb-4 text-left">
+        <h2 class="text-4xl font-bold inline-block pl-11">
+            MY BOOKINGS
+        </h2>
+        <div class="ml-10 w-[75%] h-2 bg-[#FA4616] mt-4"></div>
     </div>
   </div>
-  
+
+  <!-- No bookings case -->
+  <div *ngIf="bookings().length === 0" class="text-center text-lg italic text-white">
+    🏀 No bookings yet — time to hit the court!
+  </div>
+
+  <!-- Booking Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pl-10 pr-4">
+    <div *ngFor="let booking of bookings()" 
+         class="bg-white/80 text-[#003B5B] rounded-2xl px-8 py-6 shadow-xl transition-transform transform hover:scale-[1.01] backdrop-blur-sm">
+      
+      <div class="grid grid-cols-2 gap-y-3 text-lg font-medium capitalize">
+        <p><span class="text-[#005B8D] font-semibold">Booking ID:</span> {{ booking.booking_id }}</p>
+        <p><span class="text-[#005B8D] font-semibold">Sport:</span> {{ booking.sport_name }}</p>
+        <p><span class="text-[#005B8D] font-semibold">Court:</span> {{ booking.court_name }}</p>
+        <p><span class="text-[#005B8D] font-semibold">Time Slot:</span> {{ booking.slot_time }}</p>
+        <p class="col-span-2">
+          <span class="text-[#005B8D] font-semibold">Status:</span>
+          <span [ngClass]="{
+            'text-green-600': booking.booking_status === 'booked',
+            'text-red-600': booking.booking_status !== 'booked'
+          }" class="ml-1">
+            ✅ {{ booking.booking_status }}
+          </span>
+        </p>
+      </div>
+
+      <!-- Cancel Button -->
+      <div class="mt-4 text-right">
+        <button
+          (click)="cancelBooking(booking.booking_id)"
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm transition">
+          CANCEL
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

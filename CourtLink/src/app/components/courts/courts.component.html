@@ -1,8 +1,13 @@
 <!-- courts.component.html -->
 <div class="p-10 min-h-screen bg-gradient-to-b from-[#005B8D] to-[#F26A2E] font-sans">
-  <!-- Header for the selected sport -->
-  <div class="text-center text-4xl font-bold text-white mb-8">
-    AVAILABLE {{ selectedSport() | uppercase }} COURTS
+  <!-- Styled Header (matches My Bookings) -->
+  <div class="p-6 -mt-5 text-white">
+    <div class="mb-4 text-left">
+      <h2 class="text-4xl font-bold inline-block pl-11">
+        AVAILABLE {{ selectedSport() | uppercase }} COURTS
+      </h2>
+      <div class="ml-10 w-[75%] h-2 bg-[#FA4616] mt-4"></div>
+    </div>
   </div>
 
   <!-- Show a message if no courts are loaded -->
@@ -94,9 +99,7 @@
   </div>
 </div>
 
-<!-- ✅ Toast Notification: Appears after reload if booking was successful -->
 <!-- ✅ Toast Notification -->
-<!-- ✅ Booking Confirmation Banner Toast -->
 <div *ngIf="bookingSuccess()" 
      class="fixed bottom-6 right-6 w-[22rem] md:w-[30rem] bg-green-600 text-white px-6 py-4 rounded-lg shadow-lg z-50 transition-opacity duration-500">
   <div class="flex items-center gap-2">
@@ -104,5 +107,3 @@
     <span class="text-sm font-medium">Booking confirmed successfully!</span>
   </div>
 </div>
-
-

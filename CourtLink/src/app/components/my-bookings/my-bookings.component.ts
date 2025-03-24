@@ -20,12 +20,31 @@ export class MyBookingsComponent {
       if (user?.email) {
         this.userEmail.set(user.email);
         this.fetchBookings(user.email);
+      } else {
+        console.warn("❌ Could not fetch user email.");
       }
     });
   }
 
   fetchBookings(email: string) {
-    this.http.get<any[]>(`http://localhost:8080/GetUserBookings?email=${email}`)
-      .subscribe(data => this.bookings.set(data));
+    const url = `http://localhost:8080/listBookings?email=${encodeURIComponent(email)}`;
+    this.http.get<any[]>(url).subscribe({
+      next: (data) => this.bookings.set(data),
+      error: (err) => console.error("❌ Error fetching bookings:", err)
+    });
+  }
+
+  cancelBooking(bookingId: number) {
+    const url = `http://localhost:8080/cancelBooking?id=${bookingId}`;
+    this.http.delete(url).subscribe({
+      next: () => {
+        console.log("✅ Booking cancelled:", bookingId);
+        this.bookings.set(this.bookings().filter(b => b.booking_id !== bookingId));
+      },
+      error: (err) => {
+        console.error("❌ Failed to cancel booking:", err);
+        alert("Failed to cancel booking. Please try again.");
+      }
+    });
   }
 }
