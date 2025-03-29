@@ -12,18 +12,49 @@ import (
 	"gorm.io/gorm"
 )
 
-func setupTestDB() {
+func setupTestDB() *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect to the database")
+	}
 
-	DataBase.DB, _ = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
-	DataBase.DB.AutoMigrate(&DataBase.Customer{}, &DataBase.Sport{}, &DataBase.Court{}, &DataBase.Bookings{})
+	// Migrate the schema.
+	db.AutoMigrate(&DataBase.Customer{}, &DataBase.Sport{}, &DataBase.Court{}, &DataBase.Bookings{})
 
-	DataBase.DB.Create(&DataBase.Customer{Customer_ID: 122, Name: "John Doe", Email: "john@example.com", Contact: "1234567890"})
-	DataBase.DB.Create(&DataBase.Sport{Sport_ID: 122, Sport_name: "Tennis", Sport_Description: "Tennis Sport"})
-	DataBase.DB.Create(&DataBase.Court{Court_ID: 122, Court_Name: "Court A", Court_Location: "Downtown", Court_Status: 1, Sport_id: 1})
+	// Insert test data.
+	db.Create(&DataBase.Customer{
+		Customer_ID: 122,
+		Name:        "John Doe",
+		Email:       "john@example.com",
+		Contact:     "1234567890",
+	})
+	db.Create(&DataBase.Sport{
+		Sport_ID:          122,
+		Sport_name:        "Tennis",
+		Sport_Description: "Tennis Sport",
+	})
+	db.Create(&DataBase.Court{
+		Court_ID:       122,
+		Court_Name:     "Court A",
+		Court_Location: "Downtown",
+		Court_Status:   1,
+		Sport_id:       122,
+	})
+	// Insert a booking record with the correct Booking_Time.
+	db.Create(&DataBase.Bookings{
+		Booking_ID:     1,
+		Customer_ID:    122,
+		Court_ID:       122,
+		Sport_ID:       122,
+		Booking_Status: "Confirmed",
+		Booking_Time:   2, // This corresponds to "10-11 AM"
+	})
+
+	return db
 }
 
 func TestCreateBooking(t *testing.T) {
-	setupTestDB()
+	DataBase.DB = setupTestDB()
 
 	bookingRequest := map[string]interface{}{
 		"Customer_ID":    122,
