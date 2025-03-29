@@ -136,7 +136,7 @@ func TestCancelBookingandUpdateSlot(t *testing.T) {
 		Slot_08_09: 0,
 		Slot_09_10: 0,
 		Slot_10_11: 0,
-		Slot_11_12: 1, // This slot corresponds to index 3.
+		Slot_11_12: 0, // This slot corresponds to index 3.
 		Slot_12_13: 0,
 		Slot_13_14: 0,
 		Slot_14_15: 0,
