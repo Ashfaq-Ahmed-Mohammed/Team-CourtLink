@@ -121,6 +121,18 @@ func UpdateCourtSlotandBooking(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// CancelBookingandUpdateSlot godoc
+// @Summary      Cancel a booking and update court time slot
+// @Description  Cancels a booking by updating its status to "Cancelled" and marks the corresponding time slot (based on Booking_Time) as available (sets it to 1) in the Court_TimeSlots record.
+// @Tags         courts
+// @Accept       json
+// @Produce      plain
+// @Param        cancelRequest  body      DataBase.CancelRequest  true  "Cancel Booking Request"  example({"Booking_ID": 123})
+// @Success      200            {string}  string  "Booking cancelled and slot updated successfully for Booking_ID: 123"
+// @Failure      400            {string}  string  "Invalid request body or Invalid Slot_Index"
+// @Failure      404            {string}  string  "Booking not found or Court TimeSlots not found"
+// @Failure      500            {string}  string  "Failed to start transaction, database error, or transaction commit failed"
+// @Router       /CancelBookingandUpdateSlot [put]
 func CancelBookingandUpdateSlot(w http.ResponseWriter, r *http.Request) {
 	var cancelRequest DataBase.CancelRequest
 

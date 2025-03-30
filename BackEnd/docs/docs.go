@@ -15,6 +15,58 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/CancelBookingandUpdateSlot": {
+            "put": {
+                "description": "Cancels a booking by updating its status to \"Cancelled\" and marks the corresponding time slot (based on Booking_Time) as available (sets it to 1) in the Court_TimeSlots record.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "courts"
+                ],
+                "summary": "Cancel a booking and update court time slot",
+                "parameters": [
+                    {
+                        "description": "Cancel Booking Request",
+                        "name": "cancelRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.CancelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking cancelled and slot updated successfully for Booking_ID: 123",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or Invalid Slot_Index",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found or Court TimeSlots not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to start transaction, database error, or transaction commit failed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/CreateBooking": {
             "post": {
                 "description": "Creates a new booking after validating the existence of the customer, sport, and court.",
@@ -112,9 +164,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/UpdateCourtSlot": {
+        "/UpdateCourtSlotandBooking": {
             "put": {
-                "description": "Toggles the availability of a court time slot. If the slot is booked, it is freed; if it is free, it is booked.",
+                "description": "Toggles the availability of a court time slot and, based on the provided customer email and sport name,",
                 "consumes": [
                     "application/json"
                 ],
@@ -124,10 +176,10 @@ const docTemplate = `{
                 "tags": [
                     "courts"
                 ],
-                "summary": "Update court slot status",
+                "summary": "Update court slot and create booking",
                 "parameters": [
                     {
-                        "description": "Court slot update request",
+                        "description": "Court slot update request including Customer_email and Sport_name",
                         "name": "updateRequest",
                         "in": "body",
                         "required": true,
@@ -138,7 +190,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Slot updated successfully for Court_ID: {Court_ID}, Slot_Index: {Slot_Index}",
+                        "description": "Slot updated and booking created successfully for Court_ID: {Court_ID}, Slot_Index: {Slot_Index}",
                         "schema": {
                             "type": "string"
                         }
@@ -150,13 +202,13 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Court time slots not found",
+                        "description": "Court time slots, Customer, or Sport not found",
                         "schema": {
                             "$ref": "#/definitions/DataBase.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database error or failed to update slot",
+                        "description": "Database error or failed to update slot/booking",
                         "schema": {
                             "$ref": "#/definitions/DataBase.ErrorResponse"
                         }
@@ -210,9 +262,83 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/listBookings": {
+            "get": {
+                "description": "Retrieves a list of bookings for a customer by email. Returns booking details including court name, sport name, slot time, and booking status.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "List bookings for a customer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "john@example.com",
+                        "description": "Customer email",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of bookings for the customer\"  example([{\"booking_id\":1,\"court_name\":\"Court A\",\"sport_name\":\"Tennis\",\"slot_time\":\"10-11 AM\",\"booking_status\":\"Confirmed\"}])",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Bookings.BookingResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Email query parameter is required",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Database error while fetching bookings",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "Bookings.BookingResponse": {
+            "type": "object",
+            "properties": {
+                "booking_id": {
+                    "type": "integer"
+                },
+                "booking_status": {
+                    "type": "string"
+                },
+                "court_name": {
+                    "type": "string"
+                },
+                "slot_time": {
+                    "type": "string"
+                },
+                "sport_name": {
+                    "type": "string"
+                }
+            }
+        },
         "DataBase.Bookings": {
             "type": "object",
             "properties": {
@@ -223,7 +349,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "Booking_Time": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "Court_ID": {
                     "type": "integer"
@@ -242,6 +368,14 @@ const docTemplate = `{
                 },
                 "sport": {
                     "$ref": "#/definitions/DataBase.Sport"
+                }
+            }
+        },
+        "DataBase.CancelRequest": {
+            "type": "object",
+            "properties": {
+                "Booking_ID": {
+                    "type": "integer"
                 }
             }
         },
@@ -300,11 +434,14 @@ const docTemplate = `{
                 "Court_Name": {
                     "type": "string"
                 },
-                "Customer_ID": {
-                    "type": "integer"
+                "Customer_email": {
+                    "type": "string"
                 },
                 "Slot_Index": {
                     "type": "integer"
+                },
+                "Sport_ID": {
+                    "type": "string"
                 },
                 "Sport_name": {
                     "type": "string"
