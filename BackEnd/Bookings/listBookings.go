@@ -6,6 +6,26 @@ import (
 	"net/http"
 )
 
+type BookingResponse struct {
+	BookingID     uint   `json:"booking_id"`
+	CourtName     string `json:"court_name"`
+	SportName     string `json:"sport_name"`
+	SlotTime      string `json:"slot_time"`
+	BookingStatus string `json:"booking_status"`
+}
+
+// ListBookings godoc
+// @Summary      List bookings for a customer
+// @Description  Retrieves a list of bookings for a customer by email. Returns booking details including court name, sport name, slot time, and booking status.
+// @Tags         Booking
+// @Accept       json
+// @Produce      json
+// @Param        email  query     string  true  "Customer email"  default(john@example.com)
+// @Success      200    {array}   BookingResponse  "List of bookings for the customer"  example([{"booking_id":1,"court_name":"Court A","sport_name":"Tennis","slot_time":"10-11 AM","booking_status":"Confirmed"}])
+// @Failure      400    {string}  string  "Email query parameter is required"
+// @Failure      404    {string}  string  "Customer not found"
+// @Failure      500    {string}  string  "Database error while fetching bookings"
+// @Router       /listBookings [get]
 func ListBookings(w http.ResponseWriter, r *http.Request) {
 
 	email := r.URL.Query().Get("email")
@@ -59,14 +79,6 @@ func ListBookings(w http.ResponseWriter, r *http.Request) {
 		"3-4 PM",
 		"4-5 PM",
 		"5-6 PM",
-	}
-
-	type BookingResponse struct {
-		BookingID     uint   `json:"booking_id"`
-		CourtName     string `json:"court_name"`
-		SportName     string `json:"sport_name"`
-		SlotTime      string `json:"slot_time"`
-		BookingStatus string `json:"booking_status"`
 	}
 
 	var responseBookings []BookingResponse

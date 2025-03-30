@@ -1,5 +1,18 @@
 basePath: /
 definitions:
+  Bookings.BookingResponse:
+    properties:
+      booking_id:
+        type: integer
+      booking_status:
+        type: string
+      court_name:
+        type: string
+      slot_time:
+        type: string
+      sport_name:
+        type: string
+    type: object
   DataBase.Bookings:
     properties:
       Booking_ID:
@@ -7,7 +20,7 @@ definitions:
       Booking_Status:
         type: string
       Booking_Time:
-        type: string
+        type: integer
       Court_ID:
         type: integer
       Customer_ID:
@@ -20,6 +33,11 @@ definitions:
         $ref: '#/definitions/DataBase.Customer'
       sport:
         $ref: '#/definitions/DataBase.Sport'
+    type: object
+  DataBase.CancelRequest:
+    properties:
+      Booking_ID:
+        type: integer
     type: object
   DataBase.Court:
     properties:
@@ -57,10 +75,12 @@ definitions:
         type: integer
       Court_Name:
         type: string
-      Customer_ID:
-        type: integer
+      Customer_email:
+        type: string
       Slot_Index:
         type: integer
+      Sport_ID:
+        type: string
       Sport_name:
         type: string
     type: object
@@ -96,6 +116,44 @@ info:
   title: Court Booking API
   version: "1.0"
 paths:
+  /CancelBookingandUpdateSlot:
+    put:
+      consumes:
+      - application/json
+      description: Cancels a booking by updating its status to "Cancelled" and marks
+        the corresponding time slot (based on Booking_Time) as available (sets it
+        to 1) in the Court_TimeSlots record.
+      parameters:
+      - description: Cancel Booking Request
+        in: body
+        name: cancelRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DataBase.CancelRequest'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: 'Booking cancelled and slot updated successfully for Booking_ID:
+            123'
+          schema:
+            type: string
+        "400":
+          description: Invalid request body or Invalid Slot_Index
+          schema:
+            type: string
+        "404":
+          description: Booking not found or Court TimeSlots not found
+          schema:
+            type: string
+        "500":
+          description: Failed to start transaction, database error, or transaction
+            commit failed
+          schema:
+            type: string
+      summary: Cancel a booking and update court time slot
+      tags:
+      - courts
   /CreateBooking:
     post:
       consumes:
@@ -161,14 +219,14 @@ paths:
       summary: Create a new customer
       tags:
       - customers
-  /UpdateCourtSlot:
+  /UpdateCourtSlotandBooking:
     put:
       consumes:
       - application/json
-      description: Toggles the availability of a court time slot. If the slot is booked,
-        it is freed; if it is free, it is booked.
+      description: Toggles the availability of a court time slot and, based on the
+        provided customer email and sport name,
       parameters:
-      - description: Court slot update request
+      - description: Court slot update request including Customer_email and Sport_name
         in: body
         name: updateRequest
         required: true
@@ -178,8 +236,8 @@ paths:
       - application/json
       responses:
         "200":
-          description: 'Slot updated successfully for Court_ID: {Court_ID}, Slot_Index:
-            {Slot_Index}'
+          description: 'Slot updated and booking created successfully for Court_ID:
+            {Court_ID}, Slot_Index: {Slot_Index}'
           schema:
             type: string
         "400":
@@ -187,14 +245,14 @@ paths:
           schema:
             $ref: '#/definitions/DataBase.ErrorResponse'
         "404":
-          description: Court time slots not found
+          description: Court time slots, Customer, or Sport not found
           schema:
             $ref: '#/definitions/DataBase.ErrorResponse'
         "500":
-          description: Database error or failed to update slot
+          description: Database error or failed to update slot/booking
           schema:
             $ref: '#/definitions/DataBase.ErrorResponse'
-      summary: Update court slot status
+      summary: Update court slot and create booking
       tags:
       - courts
   /getCourts:
@@ -229,4 +287,42 @@ paths:
       summary: Get court availability
       tags:
       - courts
+  /listBookings:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of bookings for a customer by email. Returns booking
+        details including court name, sport name, slot time, and booking status.
+      parameters:
+      - default: john@example.com
+        description: Customer email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of bookings for the customer"  example([{"booking_id":1,"court_name":"Court
+            A","sport_name":"Tennis","slot_time":"10-11 AM","booking_status":"Confirmed"}])
+          schema:
+            items:
+              $ref: '#/definitions/Bookings.BookingResponse'
+            type: array
+        "400":
+          description: Email query parameter is required
+          schema:
+            type: string
+        "404":
+          description: Customer not found
+          schema:
+            type: string
+        "500":
+          description: Database error while fetching bookings
+          schema:
+            type: string
+      summary: List bookings for a customer
+      tags:
+      - Booking
 swagger: "2.0"
