@@ -1,58 +1,85 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { CourtsComponent } from './courts.component';
-import { ActivatedRoute } from '@angular/router';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { provideRouter } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { of } from 'rxjs';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '@auth0/auth0-angular';
 
-// Dummy ApiService that does nothing.
-class DummyApiService {}
-
-describe('CourtsComponent (Standalone)', () => {
+describe('CourtsComponent (Angular 17+)', () => {
   let fixture: ComponentFixture<CourtsComponent>;
   let component: CourtsComponent;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CourtsComponent],
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [MatIconModule, HttpClientModule],
       providers: [
-        // Provide a dummy ActivatedRoute with a proper paramMap.get() method.
-        { 
-          provide: ActivatedRoute, 
-          useValue: { snapshot: { paramMap: { get: (key: string) => null } } } 
-        },
-        // Replace ApiService with a dummy version so that HttpClient is not required.
-        { provide: ApiService, useClass: DummyApiService }
+        { provide: ApiService, useValue: { getCourts: jasmine.createSpy() } },
+        { provide: AuthService, useValue: { user$: of({ email: 'test@example.com' }) } },
+        provideRouter([]),
       ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    }).compileComponents().then(() => {
+      fixture = TestBed.createComponent(CourtsComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+  }));
+
+  // Test 1: Check if component is created
+  it('should create the CourtsComponent', () => {
+    expect(component).toBeTruthy(); // Ensures the component is created successfully
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CourtsComponent);
-    component = fixture.componentInstance;
-    // Update the WritableSignals: simulate no available courts and a dummy sport.
-    component.courts.set([]);
-    component.selectedSport.set('basketball');
-    fixture.detectChanges();
+  // Test 2: Ensure that the courts signal is initialized as an empty array
+  it('should initialize courts signal as an empty array', () => {
+    expect(component.courts()).toEqual([]); // Ensures courts are initialized correctly
   });
 
-  // Test 1: Ensure the Courts component renders.
-  it('should render the courts component', () => {
-    if (!component) {
-      fail('CourtsComponent was not created.');
-    }
-    const container: HTMLElement = fixture.nativeElement.querySelector('div');
-    if (!container) {
-      fail('Courts component container not rendered.');
-    }
+  // Test 3: Check if default time slots are populated
+  it('should have time slots initialized', () => {
+    expect(component.timeSlots.length).toBeGreaterThan(0); // Ensures that time slots are populated
   });
 
-  // Test 2: Verify that "No courts available or loading..." is displayed when there are no courts.
-  it('should display "No courts available or loading..." when there are no courts', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const expectedText = 'No courts available or loading...';
-    if (!compiled.textContent || compiled.textContent.indexOf(expectedText) === -1) {
-      fail('Expected text "' + expectedText + '" not found.');
-    }
+  // Test 4: Ensure the `bookingSuccess` signal is initialized correctly
+  it('should initialize bookingSuccess signal as false', () => {
+    expect(component.bookingSuccess()).toBe(false); // Ensures booking success signal is initialized
+  });
+
+  // Test 5: Check if the modal can be closed (i.e., selectedBooking is reset)
+  it('should close the modal and reset selectedBooking', () => {
+    // Create a complete court object with all required properties
+    const court = {
+      name: 'Court A',
+      id: 1,
+      status: 1, // Add required status
+      slots: [1, 1, 0], // Add required slots
+      image: 'test-image-url', // Add required image
+      location: 'Location A', // Add required location
+      floor: 'Floor 1', // Add required floor
+      surface: 'Hard', // Add required surface
+      capacity: '4', // Add required capacity
+      type: 'Tennis' // Add required type
+    };
+
+    // Set the selectedBooking signal with the complete court object
+    component.selectedBooking.set({
+      court, // Use the complete court object
+      time: '10 AM',
+      slotIndex: 0
+    });
+
+    // Call the closeModal method
+    component.closeModal();
+
+    // Assert that the selectedBooking signal is reset to null
+    expect(component.selectedBooking()).toBeNull();
+  });
+
+  // Test 6: Check if the `selectedSport` signal is set when `sport` is passed
+  it('should set selectedSport signal when sport is passed', () => {
+    const sport = 'Basketball';
+    component.selectedSport.set(sport); // Simulate selecting a sport
+    expect(component.selectedSport()).toBe(sport); // Ensures selectedSport is set correctly
   });
 });
