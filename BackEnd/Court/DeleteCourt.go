@@ -6,6 +6,18 @@ import (
 	"net/http"
 )
 
+// DeleteCourt godoc
+// @Summary      Delete a court record
+// @Description  Deletes a court record from the database based on the court name.
+// @Tags         courts
+// @Accept       json
+// @Produce      json
+// @Param        court_name  query     string  true  "Court Name to be deleted"
+// @Success      200  {object}  map[string]string  "Court deleted successfully"
+// @Failure      400  {object}  map[string]string  "Invalid court name"
+// @Failure      404  {object}  map[string]string  "Court not found"
+// @Failure      500  {object}  map[string]string  "Internal server error"
+// @Router       /DeleteCourt [delete]
 func DeleteCourt(w http.ResponseWriter, r *http.Request) {
 	var requestData struct {
 		Court_Name string `json:"Court_Name"`

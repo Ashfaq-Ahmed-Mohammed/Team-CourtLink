@@ -6,6 +6,17 @@ import (
 	"net/http"
 )
 
+// CreateSport godoc
+// @Summary      Create a new sport record
+// @Description  Adds a new sport to the database if it does not already exist. Requires Sport_name as input.
+// @Tags         sports
+// @Accept       json
+// @Produce      json
+// @Param        sport  body      DataBase.Sport  true  "Sport object"
+// @Success      201    {object}  map[string]interface{}  "Sport record added successfully"  example({"message": "Sport record added successfully!!", "sport": {"Sport_ID": 1, "Sport_name": "Tennis"}})
+// @Failure      400    {string}  string  "Sport_name is required or the sport already exists or invalid request body"
+// @Failure      500    {string}  string  "Internal Server Error"
+// @Router       /CreateSport [post]
 func CreateSport(w http.ResponseWriter, r *http.Request) {
 	var s DataBase.Sport
 	err := json.NewDecoder(r.Body).Decode(&s)
@@ -19,6 +30,7 @@ func CreateSport(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
+
 	var existingSport DataBase.Sport
 	result := DataBase.DB.Where("Sport_name = ?", s.Sport_name).First(&existingSport)
 

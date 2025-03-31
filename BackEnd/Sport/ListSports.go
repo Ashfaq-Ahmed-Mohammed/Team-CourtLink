@@ -7,6 +7,14 @@ import (
 	"net/http"
 )
 
+// ListSports godoc
+// @Summary Get a list of sports
+// @Description Fetches all sports names from the database
+// @Tags sports
+// @Produce json
+// @Success 200 {array} string "List of sport names"
+// @Failure 500 {object} map[string]string "Failed to fetch sports"
+// @Router /ListSports [get]
 func ListSports(w http.ResponseWriter, r *http.Request) {
 	var sports []string
 

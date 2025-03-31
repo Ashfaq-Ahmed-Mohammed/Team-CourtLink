@@ -6,15 +6,35 @@ import (
 	"net/http"
 )
 
+// CourtCreationResponse represents the structure of the response for creating a court
+type CourtCreationResponse struct {
+	Message string         `json:"message"`
+	Court   DataBase.Court `json:"court"`
+}
+
+// CourtRequest represents the structure of the request body for creating a court
+type CourtRequest struct {
+	Court_Name     string `json:"Court_Name"`
+	Court_Location string `json:"Court_Location"`
+	Court_Capacity *int   `json:"Court_Capacity"`
+	Court_Status   int    `json:"Court_Status"`
+	Sport_name     string `json:"Sport_name"`
+}
+
+// CreateCourtWithTimeSlots godoc
+// @Summary Create a new court with associated time slots
+// @Description Creates a new court and assigns time slots for bookings
+// @Tags courts
+// @Accept json
+// @Produce json
+// @Param court body DataBase.Court true "Court data"
+// @Success 201 {object} CourtCreationResponse "Court created successfully"
+// @Failure 400 {object} map[string]string "Invalid request body"
+// @Failure 500 {object} map[string]string "Failed to create court"
+// @Router /CreateCourt [post]
 func CreateCourtWithTimeSlots(w http.ResponseWriter, r *http.Request) {
 	var c DataBase.Court
-	var requestData struct {
-		Court_Name     string `json:"Court_Name"`
-		Court_Location string `json:"Court_Location"`
-		Court_Capacity *int   `json:"Court_Capacity"`
-		Court_Status   int    `json:"Court_Status"`
-		Sport_name     string `json:"Sport_name"`
-	}
+	var requestData CourtRequest
 
 	err := json.NewDecoder(r.Body).Decode(&requestData)
 	if err != nil {
@@ -72,11 +92,12 @@ func CreateCourtWithTimeSlots(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Send the response with the correct structure
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	response := map[string]interface{}{
-		"message": "Court record and TimeSlots added successfully!!",
-		"court":   c,
+	response := CourtCreationResponse{
+		Message: "Court record and TimeSlots added successfully!!",
+		Court:   c,
 	}
 	json.NewEncoder(w).Encode(response)
 }

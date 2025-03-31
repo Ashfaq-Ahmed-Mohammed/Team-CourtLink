@@ -17,7 +17,7 @@ type BookingResponse struct {
 // ListBookings godoc
 // @Summary      List bookings for a customer
 // @Description  Retrieves a list of bookings for a customer by email. Returns booking details including court name, sport name, slot time, and booking status.
-// @Tags         Booking
+// @Tags         bookings
 // @Accept       json
 // @Produce      json
 // @Param        email  query     string  true  "Customer email"  default(john@example.com)
