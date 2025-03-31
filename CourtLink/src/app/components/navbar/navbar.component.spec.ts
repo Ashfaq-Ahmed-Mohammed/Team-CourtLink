@@ -1,63 +1,98 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NavbarComponent } from './navbar.component';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
+import { MatIconModule } from '@angular/material/icon';
+import { of, Observable } from 'rxjs';
+import { provideRouter } from '@angular/router';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-class DummyAuthService {
-  // Provide a minimal observable for user$
-  user$ = { subscribe: () => {} };
-  login() {}
-  logout() {}
-}
-
-describe('NavbarComponent (Standalone)', () => {
+describe('NavbarComponent (HttpClientTestingModule)', () => {
   let fixture: ComponentFixture<NavbarComponent>;
   let component: NavbarComponent;
+  let httpTestingController: HttpTestingController;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [NavbarComponent],
-      providers: [
-        // Provide a dummy for the auth0.client injection token
-        { provide: 'auth0.client', useValue: {} },
-        // Override AuthService with our dummy implementation
-        { provide: AuthService, useClass: DummyAuthService }
+  const authServiceMock: {
+    user$: Observable<{ name: string; picture: string } | null>;
+    loginWithRedirect: jasmine.Spy;
+    logout: jasmine.Spy;
+  } = {
+    user$: of({ name: 'Test User', picture: 'https://example.com/image.png' }),
+    loginWithRedirect: jasmine.createSpy('loginWithRedirect'),
+    logout: jasmine.createSpy('logout'),
+  };
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        MatIconModule,
+        HttpClientTestingModule, // ✅ Add HttpClientTestingModule
       ],
-      // This schema ignores unknown elements and attributes in the template
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+      providers: [
+        { provide: AuthService, useValue: authServiceMock },
+        provideRouter([]),
+      ],
+    }).compileComponents().then(() => {
+      fixture = TestBed.createComponent(NavbarComponent);
+      component = fixture.componentInstance;
+      httpTestingController = TestBed.inject(HttpTestingController); // ✅ Inject HttpTestingController
+      fixture.detectChanges();
+    });
+  }));
+
+  it('should create the component', () => {
+    if (!(component instanceof NavbarComponent)) {
+      throw new Error('NavbarComponent was not created');
+    }
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavbarComponent);
-    component = fixture.componentInstance;
+  it('should call logout on profile icon click', () => {
+    authServiceMock.logout.calls.reset();
+
+    const logoutBtn = fixture.nativeElement.querySelector('button[mat-icon-button] img');
+    if (!logoutBtn) {
+      throw new Error('Logout button not found');
+    }
+
+    logoutBtn.click();
+
+    if (authServiceMock.logout.calls.count() !== 1) {
+      throw new Error('Logout function was not called exactly once');
+    }
+  });
+
+  it('should show "My Bookings" button with correct text', () => {
+    const bookingsBtn = fixture.nativeElement.querySelector('a[routerlink="/my-bookings"]');
+    if (!bookingsBtn) {
+      throw new Error('"My Bookings" button not found');
+    }
+
+    const btnText = bookingsBtn.textContent?.trim();
+    if (btnText !== 'My Bookings') {
+      throw new Error(`Expected "My Bookings", but got "${btnText}"`);
+    }
+  });
+
+  it('should display "My Bookings" link in the navbar', () => {
+    // Trigger change detection to ensure the DOM is updated
     fixture.detectChanges();
+  
+    // Query for the "My Bookings" link
+    const bookingsLink = fixture.nativeElement.querySelector('a[routerlink="/my-bookings"]');
+    
+    // If the link is not found, throw an error
+    if (!bookingsLink) {
+      throw new Error('"My Bookings" link not found');
+    }
+  
+    // Check if the link text is correct
+    const linkText = bookingsLink.textContent.trim();
+    if (linkText !== 'My Bookings') {
+      throw new Error(`Expected "My Bookings" but got "${linkText}"`);
+    }
   });
+  
 
-  // Test 1: Ensure the Navbar component renders
-  it('should render the navbar', () => {
-    if (!component) {
-      fail("NavbarComponent was not created.");
-    }
-    const navElement: HTMLElement = fixture.nativeElement.querySelector('nav');
-    if (!navElement) {
-      fail("Navbar element not rendered.");
-    }
-  });
-
-  // Test 2: Verify that the logo and title are displayed correctly
-  it('should display the logo and title', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const logoImg = compiled.querySelector('img[alt="UF Logo"]');
-    if (!logoImg) {
-      fail("Logo image not found.");
-    }
-    const titleSpan = compiled.querySelector('span');
-    if (!titleSpan) {
-      fail("Title element not found.");
-    }
-    if (!titleSpan || !titleSpan.textContent || titleSpan.textContent.trim() !== 'UFCourtLink') {
-      fail("Expected title 'UFCourtLink', but got: " + (titleSpan && titleSpan.textContent ? titleSpan.textContent.trim() : ''));
-    }
+  afterEach(() => {
+    httpTestingController.verify();  // ✅ Verify that there are no outstanding HTTP requests
   });
 });
