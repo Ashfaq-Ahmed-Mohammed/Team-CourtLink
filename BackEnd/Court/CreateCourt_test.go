@@ -12,23 +12,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// Setup an in-memory SQLite database for testing
 func setupTestDBForCreateCourt() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to the database")
 	}
 
-	// Auto-migrate schema
 	db.AutoMigrate(&DataBase.Sport{}, &DataBase.Court{}, &DataBase.Court_TimeSlots{})
 
-	// Insert test data: a sport that courts can be associated with
 	db.Create(&DataBase.Sport{Sport_ID: 1, Sport_name: "Tennis", Sport_Description: "Tennis Sport"})
 
 	return db
 }
 
-// Test case for successfully creating a court with timeslots
 func TestCreateCourtWithTimeSlots(t *testing.T) {
 	DataBase.DB = setupTestDBForCreateCourt()
 
@@ -79,7 +75,6 @@ func TestCreateCourtWithTimeSlots(t *testing.T) {
 	}
 }
 
-// Test case for creating a court with an invalid sport name
 func TestCreateCourtWithInvalidSport(t *testing.T) {
 	var err error
 	DataBase.DB, err = setupTestDB()
@@ -92,7 +87,7 @@ func TestCreateCourtWithInvalidSport(t *testing.T) {
 		"Court_Location": "Downtown",
 		"Court_Capacity": 10,
 		"Court_Status":   1,
-		"Sport_name":     "InvalidSport", // This sport does not exist
+		"Sport_name":     "InvalidSport",
 	}
 
 	body, _ := json.Marshal(courtRequest)
@@ -108,7 +103,6 @@ func TestCreateCourtWithInvalidSport(t *testing.T) {
 	}
 }
 
-// Test case for creating a duplicate court
 func TestCreateDuplicateCourt(t *testing.T) {
 	var err error
 	DataBase.DB, err = setupTestDB()
@@ -116,7 +110,6 @@ func TestCreateDuplicateCourt(t *testing.T) {
 		t.Fatalf("failed to set up test database: %v", err)
 	}
 
-	// First request: should pass
 	courtRequest := map[string]interface{}{
 		"Court_Name":     "Court C",
 		"Court_Location": "Downtown",
@@ -133,7 +126,6 @@ func TestCreateDuplicateCourt(t *testing.T) {
 	handler := http.HandlerFunc(CreateCourtWithTimeSlots)
 	handler.ServeHTTP(recorder, req)
 
-	// Second request: should fail due to duplicate court
 	recorder = httptest.NewRecorder()
 	req, _ = http.NewRequest("POST", "/CreateCourtWithTimeSlots", bytes.NewBuffer(body))
 	handler.ServeHTTP(recorder, req)
