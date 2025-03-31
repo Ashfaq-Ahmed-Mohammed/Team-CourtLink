@@ -10,6 +10,11 @@ func CreateSport(w http.ResponseWriter, r *http.Request) {
 	var s DataBase.Sport
 	err := json.NewDecoder(r.Body).Decode(&s)
 
+	if s.Sport_name == "" {
+		http.Error(w, "Sport_name is required", http.StatusBadRequest)
+		return
+	}
+
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
