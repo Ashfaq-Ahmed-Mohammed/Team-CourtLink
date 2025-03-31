@@ -12,6 +12,15 @@ type CourtData struct {
 	SportName string `json:"sport_name"`
 }
 
+// ListCourts godoc
+// @Summary      List all courts with their associated sports
+// @Description  Retrieves a list of all courts along with the corresponding sport names.
+// @Tags         courts
+// @Accept       json
+// @Produce      json
+// @Success      200    {array}   CourtData  "List of courts and their associated sports"  example([{"court_name": "Court A", "sport_name": "Tennis"}, {"court_name": "Court B", "sport_name": "Basketball"}])
+// @Failure      500    {string}  string  "Database error while fetching courts"
+// @Router       /ListCourts [get]
 func ListCourts(w http.ResponseWriter, r *http.Request) {
 	var courts []CourtData
 

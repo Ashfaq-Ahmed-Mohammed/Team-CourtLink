@@ -13,6 +13,20 @@ definitions:
       sport_name:
         type: string
     type: object
+  Court.CourtCreationResponse:
+    properties:
+      court:
+        $ref: '#/definitions/DataBase.Court'
+      message:
+        type: string
+    type: object
+  Court.CourtData:
+    properties:
+      court_name:
+        type: string
+      sport_name:
+        type: string
+    type: object
   DataBase.Bookings:
     properties:
       Booking_ID:
@@ -190,6 +204,74 @@ paths:
       summary: Create a new booking
       tags:
       - bookings
+  /CreateCourt:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new court and assigns time slots for bookings
+      parameters:
+      - description: Court data
+        in: body
+        name: court
+        required: true
+        schema:
+          $ref: '#/definitions/DataBase.Court'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Court created successfully
+          schema:
+            $ref: '#/definitions/Court.CourtCreationResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to create court
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new court with associated time slots
+      tags:
+      - courts
+  /CreateSport:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new sport to the database if it does not already exist.
+        Requires Sport_name as input.
+      parameters:
+      - description: Sport object
+        in: body
+        name: sport
+        required: true
+        schema:
+          $ref: '#/definitions/DataBase.Sport'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'Sport record added successfully"  example({"message": "Sport
+            record added successfully!!", "sport": {"Sport_ID": 1, "Sport_name": "Tennis"}})'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Sport_name is required or the sport already exists or invalid
+            request body
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new sport record
+      tags:
+      - sports
   /Customer:
     post:
       consumes:
@@ -219,6 +301,92 @@ paths:
       summary: Create a new customer
       tags:
       - customers
+  /DeleteCourt:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a court record from the database based on the court name.
+      parameters:
+      - description: Court Name to be deleted
+        in: query
+        name: court_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Court deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid court name
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Court not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a court record
+      tags:
+      - courts
+  /ListCourts:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all courts along with the corresponding sport
+        names.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'List of courts and their associated sports"  example([{"court_name":
+            "Court A", "sport_name": "Tennis"}, {"court_name": "Court B", "sport_name":
+            "Basketball"}])'
+          schema:
+            items:
+              $ref: '#/definitions/Court.CourtData'
+            type: array
+        "500":
+          description: Database error while fetching courts
+          schema:
+            type: string
+      summary: List all courts with their associated sports
+      tags:
+      - courts
+  /ListSports:
+    get:
+      description: Fetches all sports names from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of sport names
+          schema:
+            items:
+              type: string
+            type: array
+        "500":
+          description: Failed to fetch sports
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a list of sports
+      tags:
+      - sports
   /UpdateCourtSlotandBooking:
     put:
       consumes:
@@ -324,5 +492,5 @@ paths:
             type: string
       summary: List bookings for a customer
       tags:
-      - Booking
+      - bookings
 swagger: "2.0"

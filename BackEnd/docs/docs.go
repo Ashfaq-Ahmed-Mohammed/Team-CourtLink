@@ -120,6 +120,105 @@ const docTemplate = `{
                 }
             }
         },
+        "/CreateCourt": {
+            "post": {
+                "description": "Creates a new court and assigns time slots for bookings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courts"
+                ],
+                "summary": "Create a new court with associated time slots",
+                "parameters": [
+                    {
+                        "description": "Court data",
+                        "name": "court",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.Court"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Court created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/Court.CourtCreationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create court",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/CreateSport": {
+            "post": {
+                "description": "Adds a new sport to the database if it does not already exist. Requires Sport_name as input.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sports"
+                ],
+                "summary": "Create a new sport record",
+                "parameters": [
+                    {
+                        "description": "Sport object",
+                        "name": "sport",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.Sport"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Sport record added successfully\"  example({\"message\": \"Sport record added successfully!!\", \"sport\": {\"Sport_ID\": 1, \"Sport_name\": \"Tennis\"}})",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Sport_name is required or the sport already exists or invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/Customer": {
             "post": {
                 "description": "Adds a new customer to the database if they do not already exist.",
@@ -160,6 +259,132 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/DeleteCourt": {
+            "delete": {
+                "description": "Deletes a court record from the database based on the court name.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courts"
+                ],
+                "summary": "Delete a court record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Court Name to be deleted",
+                        "name": "court_name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Court deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid court name",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Court not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ListCourts": {
+            "get": {
+                "description": "Retrieves a list of all courts along with the corresponding sport names.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courts"
+                ],
+                "summary": "List all courts with their associated sports",
+                "responses": {
+                    "200": {
+                        "description": "List of courts and their associated sports\"  example([{\"court_name\": \"Court A\", \"sport_name\": \"Tennis\"}, {\"court_name\": \"Court B\", \"sport_name\": \"Basketball\"}])",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Court.CourtData"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Database error while fetching courts",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ListSports": {
+            "get": {
+                "description": "Fetches all sports names from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sports"
+                ],
+                "summary": "Get a list of sports",
+                "responses": {
+                    "200": {
+                        "description": "List of sport names",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch sports",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }
@@ -273,7 +498,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Booking"
+                    "bookings"
                 ],
                 "summary": "List bookings for a customer",
                 "parameters": [
@@ -332,6 +557,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "slot_time": {
+                    "type": "string"
+                },
+                "sport_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "Court.CourtCreationResponse": {
+            "type": "object",
+            "properties": {
+                "court": {
+                    "$ref": "#/definitions/DataBase.Court"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "Court.CourtData": {
+            "type": "object",
+            "properties": {
+                "court_name": {
                     "type": "string"
                 },
                 "sport_name": {
