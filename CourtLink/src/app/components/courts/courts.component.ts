@@ -2,6 +2,7 @@ import { Component, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { HttpClientModule } from '@angular/common/http'; // <-- Add HttpClientModule here
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
 
@@ -26,8 +27,8 @@ interface Booking {
 
 @Component({
   selector: 'app-courts',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
+  standalone: true,  // This marks the component as standalone
+  imports: [CommonModule, RouterModule, HttpClientModule],  // <-- Add HttpClientModule to imports
   templateUrl: './courts.component.html',
   styleUrls: ['./courts.component.css']
 })
