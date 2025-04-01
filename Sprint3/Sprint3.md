@@ -146,7 +146,7 @@ Cypress Test Result
 
 - Admin sports Component Unit TestCase Results
 
-![Test Case Results](Pics/AdminSports.jpeg)
+![Test Case Results](Pics/Adminsports.jpeg)
 
 
 ## BackEnd API Documentation (Swagger)
