@@ -158,21 +158,12 @@ Cypress Test Result
 ![Test Case Results](Pics/Adminsports.jpeg)
 
 
-## Court Booking API Documentation
+## BackEnd API Documentation (Swagger)
 
-### Version: 1.0
+## Court Booking API
+API for managing court bookings
 
-### Description: 
-API for managing court bookings.
-
-### Host: 
-localhost:8080
-
-### Base Path: 
-/
-
----
-
+## Version: 1.1
 ## Endpoints
 
 ### 1. **/CancelBookingandUpdateSlot** (PUT)
