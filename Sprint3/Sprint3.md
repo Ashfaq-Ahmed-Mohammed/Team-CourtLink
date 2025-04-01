@@ -60,11 +60,6 @@ We are now displaying the bookings of the user with a good UI and also have the 
 For this, a request to the backend with user information will fetch all the booking details affiliated with that user.
 Performed Unit Testing on this component to make sure everything is working.
 
-## Work planned but not completed as part of Sprint 3:
-
-- **Implement booking functionality**
-  - **Reason**: The integration of the front end to the backend of current APIs and features took up most of the time. However,we have the APIS to handle the booking process ready.
-
 ## Unit Test Case Results:
 
 ## FROM SPRINT 2
