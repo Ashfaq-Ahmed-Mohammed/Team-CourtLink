@@ -158,187 +158,342 @@ Cypress Test Result
 ![Test Case Results](Pics/Adminsports.jpeg)
 
 
-## BackEnd API Documentation (Swagger)
+## Court Booking API Documentation
 
-## Court Booking API
-API for managing court bookings
+### Version: 1.0
 
-## Version: 1.0
+### Description: 
+API for managing court bookings.
 
+### Host: 
+localhost:8080
 
-## /CreateBooking
+### Base Path: 
+/
 
-#### POST
-##### Summary:
+---
 
+## Endpoints
+
+### 1. **/CancelBookingandUpdateSlot** (PUT)
+
+#### Summary:
+Cancel a booking and update court time slot
+
+#### Description:
+Cancels a booking by updating its status to "Cancelled" and marks the corresponding time slot (based on Booking_Time) as available (sets it to 1) in the Court_TimeSlots record.
+
+#### Parameters
+
+| Name            | Located in | Description          | Required | Schema                               |
+|-----------------|------------|----------------------|----------|--------------------------------------|
+| cancelRequest   | body       | Cancel Booking Request | Yes      | [DataBase.CancelRequest](#DataBase.CancelRequest) |
+
+#### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200  | Booking cancelled and slot updated successfully | string |
+| 400  | Invalid request body or Invalid Slot_Index | string |
+| 404  | Booking not found or Court TimeSlots not found | string |
+| 500  | Failed to start transaction, database error, or transaction commit failed | string |
+
+---
+
+### 2. **/CreateBooking** (POST)
+
+#### Summary:
 Create a new booking
 
-##### Description:
-
+#### Description:
 Creates a new booking after validating the existence of the customer, sport, and court.
 
-##### Parameters
+#### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| booking | body | Booking data | Yes | [DataBase.Bookings](#DataBase.Bookings) |
+| Name   | Located in | Description     | Required | Schema                           |
+|--------|------------|-----------------|----------|----------------------------------|
+| booking | body      | Booking data    | Yes      | [DataBase.Bookings](#DataBase.Bookings) |
 
-##### Responses
+#### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Booking record added successfully | object |
-| 400 | Invalid request body | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
-| 404 | Customer, sport, or court not found | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
-| 500 | Internal server error | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 201  | Booking record added successfully | object |
+| 400  | Invalid request body | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 404  | Customer, sport, or court not found | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 500  | Internal server error | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
 
-## /Customer
+---
 
-#### POST
-##### Summary:
+### 3. **/CreateCourt** (POST)
 
+#### Summary:
+Create a new court with associated time slots
+
+#### Description:
+Creates a new court and assigns time slots for bookings.
+
+#### Parameters
+
+| Name   | Located in | Description     | Required | Schema                          |
+|--------|------------|-----------------|----------|---------------------------------|
+| court  | body       | Court data      | Yes      | [DataBase.Court](#DataBase.Court) |
+
+#### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201  | Court created successfully | [Court.CourtCreationResponse](#Court.CourtCreationResponse) |
+| 400  | Invalid request body | object |
+| 500  | Failed to create court | object |
+
+---
+
+### 4. **/CreateSport** (POST)
+
+#### Summary:
+Create a new sport record
+
+#### Description:
+Adds a new sport to the database if it does not already exist.
+
+#### Parameters
+
+| Name   | Located in | Description     | Required | Schema                          |
+|--------|------------|-----------------|----------|---------------------------------|
+| sport  | body       | Sport object    | Yes      | [DataBase.Sport](#DataBase.Sport) |
+
+#### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201  | Sport record added successfully | object |
+| 400  | Sport_name is required or the sport already exists | string |
+| 500  | Internal Server Error | string |
+
+---
+
+### 5. **/Customer** (POST)
+
+#### Summary:
 Create a new customer
 
-##### Description:
-
+#### Description:
 Adds a new customer to the database if they do not already exist.
 
-##### Parameters
+#### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| customer | body | Customer data | Yes | [DataBase.Customer](#DataBase.Customer) |
+| Name     | Located in | Description   | Required | Schema                           |
+|----------|------------|---------------|----------|----------------------------------|
+| customer | body       | Customer data | Yes      | [DataBase.Customer](#DataBase.Customer) |
 
-##### Responses
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Customer already exists |  |
-| 201 | Customer record added successfully | object |
-| 400 | Invalid request body |  |
-| 500 | Internal server error |  |
-
-## /UpdateCourtSlot
-
-#### PUT
-##### Summary:
-
-Update court slot status
-
-##### Description:
-
-Toggles the availability of a court time slot. If the slot is booked, it is freed; if it is free, it is booked.
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| updateRequest | body | Court slot update request | Yes | [DataBase.CourtUpdate](#DataBase.CourtUpdate) |
-
-##### Responses
+#### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Slot updated successfully for Court_ID: {Court_ID}, Slot_Index: {Slot_Index} | string |
-| 400 | Invalid request body or Slot_Index out of range | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
-| 404 | Court time slots not found | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
-| 500 | Database error or failed to update slot | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 200  | Customer already exists | |
+| 201  | Customer record added successfully | object |
+| 400  | Invalid request body | |
+| 500  | Internal server error | |
 
-## /getCourts
+---
 
-#### GET
-##### Summary:
+### 6. **/DeleteCourt** (DELETE)
 
+#### Summary:
+Delete a court record
+
+#### Description:
+Deletes a court record from the database based on the court name.
+
+#### Parameters
+
+| Name        | Located in | Description   | Required | Schema |
+|-------------|------------|---------------|----------|--------|
+| court_name  | query      | Court Name    | Yes      | string |
+
+#### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200  | Court deleted successfully | object |
+| 400  | Invalid court name | object |
+| 404  | Court not found | object |
+| 500  | Internal server error | object |
+
+---
+
+### 7. **/ListCourts** (GET)
+
+#### Summary:
+List all courts with their associated sports
+
+#### Description:
+Retrieves a list of all courts along with the corresponding sport names.
+
+#### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200  | List of courts and their associated sports | [DataBase.CourtData](#DataBase.CourtData) |
+| 500  | Database error while fetching courts | string |
+
+---
+
+### 8. **/ListSports** (GET)
+
+#### Summary:
+Get a list of sports
+
+#### Description:
+Fetches all sports names from the database.
+
+#### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200  | List of sport names | array of strings |
+| 500  | Failed to fetch sports | object |
+
+---
+
+### 9. **/UpdateCourtSlotandBooking** (PUT)
+
+#### Summary:
+Update court slot and create booking
+
+#### Description:
+Toggles the availability of a court time slot and, based on the provided customer email and sport name, updates the booking status.
+
+#### Parameters
+
+| Name           | Located in | Description                               | Required | Schema                                    |
+|----------------|------------|-------------------------------------------|----------|-------------------------------------------|
+| updateRequest  | body       | Court slot update request                 | Yes      | [DataBase.CourtUpdate](#DataBase.CourtUpdate) |
+
+#### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200  | Slot updated and booking created successfully | string |
+| 400  | Invalid request body or Slot_Index out of range | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 404  | Court time slots, Customer, or Sport not found | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 500  | Database error or failed to update slot/booking | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+
+---
+
+### 10. **/getCourts** (GET)
+
+#### Summary:
 Get court availability
 
-##### Description:
-
+#### Description:
 Fetches courts based on the selected sport and provides their availability status along with time slots.
 
-##### Parameters
+#### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| sport | query | Sport name | Yes | string |
+| Name   | Located in | Description     | Required | Schema |
+|--------|------------|-----------------|----------|--------|
+| sport  | query      | Sport name      | Yes      | string |
 
-##### Responses
+#### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | List of available courts with time slots | [ [DataBase.CourtAvailability](#DataBase.CourtAvailability) ] |
-| 400 | Missing 'sport' query parameter | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
-| 404 | Sport not found or no courts available | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 200  | List of available courts with time slots | [DataBase.CourtAvailability](#DataBase.CourtAvailability) |
+| 400  | Missing 'sport' query parameter | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
+| 404  | Sport not found or no courts available | [DataBase.ErrorResponse](#DataBase.ErrorResponse) |
 
-### Models
+---
 
+### 11. **/listBookings** (GET)
 
-#### DataBase.Bookings
+#### Summary:
+List bookings for a customer
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Booking_ID | integer |  | No |
-| Booking_Status | string |  | No |
-| Booking_Time | string |  | No |
-| Court_ID | integer |  | No |
-| Customer_ID | integer |  | No |
-| Sport_ID | integer |  | No |
-| court | [DataBase.Court](#DataBase.Court) |  | No |
-| customer | [DataBase.Customer](#DataBase.Customer) |  | No |
-| sport | [DataBase.Sport](#DataBase.Sport) |  | No |
+#### Description:
+Retrieves a list of bookings for a customer by email. Returns booking details including court name, sport name, slot time, and booking status.
 
-#### DataBase.Court
+#### Parameters
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Court_ID | integer |  | No |
-| Court_Location | string |  | No |
-| Court_Name | string |  | No |
-| Court_Status | integer |  | No |
-| Sport_id | integer |  | No |
-| court_Capacity | integer |  | No |
-| sport | [DataBase.Sport](#DataBase.Sport) |  | No |
+| Name   | Located in | Description     | Required | Schema |
+|--------|------------|-----------------|----------|--------|
+| email  | query      | Customer email  | Yes      | string |
 
-#### DataBase.CourtAvailability
+#### Responses
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| CourtID | integer |  | No |
-| CourtName | string |  | No |
-| CourtStatus | integer |  | No |
-| Slots | [ integer ] |  | No |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200  | List of bookings for the customer | [Bookings.BookingResponse](#Bookings.BookingResponse) |
+| 400  | Email query parameter is required | string |
+| 404  | Customer not found | string |
+| 500  | Database error while fetching bookings | string |
 
-#### DataBase.CourtUpdate
+---
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Court_ID | integer |  | No |
-| Court_Name | string |  | No |
-| Customer_ID | integer |  | No |
-| Slot_Index | integer |  | No |
-| Sport_name | string |  | No |
+## Models
 
-#### DataBase.Customer
+### DataBase.CancelRequest
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Contact | string |  | No |
-| Customer_ID | integer |  | No |
-| email | string |  | No |
-| name | string |  | No |
+| Name         | Type    | Description               | Required |
+|--------------|---------|---------------------------|----------|
+| Booking_ID   | integer | Unique identifier for booking | Yes |
 
-#### DataBase.ErrorResponse
+### DataBase.Court
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| message | string |  | No |
+| Name          | Type    | Description            | Required |
+|---------------|---------|------------------------|----------|
+| Court_ID      | integer | Court ID               | Yes |
+| Court_Location| string  | Court Location         | Yes |
+| Court_Name    | string  | Court Name             | Yes |
+| Court_Status  | integer | Court Availability     | Yes |
+| Sport_id      | integer | Sport ID               | Yes |
+| court_Capacity| integer | Court Capacity         | Yes |
+| sport         | [DataBase.Sport](#DataBase.Sport) | Associated sport | Yes |
 
-#### DataBase.Sport
+### DataBase.CourtAvailability
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Sport_ID | integer |  | No |
-| Sport_name | string |  | No |
-| sport_Description | string |  | No |
+| Name        | Type    | Description             | Required |
+|-------------|---------|-------------------------|----------|
+| CourtID     | integer | Court ID                | Yes |
+| CourtName   | string  | Court Name              | Yes |
+| CourtStatus | integer | Availability status     | Yes |
+| Slots       | [integer] | Available time slots    | Yes |
+
+### DataBase.CourtUpdate
+
+| Name        | Type    | Description             | Required |
+|-------------|---------|-------------------------|----------|
+| Court_ID    | integer | Court ID                | Yes |
+| Court_Name  | string  | Court Name              | Yes |
+| Customer_ID | integer | Customer ID             | Yes |
+| Slot_Index  | integer | Slot Index              | Yes |
+| Sport_name  | string  | Sport Name              | Yes |
+
+### DataBase.Customer
+
+| Name          | Type    | Description            | Required |
+|---------------|---------|------------------------|----------|
+| Contact       | string  | Customer contact info  | Yes |
+| Customer_ID   | integer | Customer identifier    | Yes |
+| email         | string  | Customer email address | Yes |
+| name          | string  | Customer name          | Yes |
+
+### DataBase.ErrorResponse
+
+| Name     | Type   | Description          | Required |
+|----------|--------|----------------------|----------|
+| message  | string | Error message        | Yes |
+
+### DataBase.Sport
+
+| Name              | Type    | Description                | Required |
+|-------------------|---------|----------------------------|----------|
+| Sport_ID          | integer | Sport identifier           | Yes |
+| Sport_name        | string  | Name of the sport          | Yes |
+| sport_Description | string  | Description of the sport   | Yes |
+
+---
 
 ### Video Recordings
 - [Sprint 3 Video Recording](https://drive.google.com/file/d/1FumildnwsavBMdAnkCbc_pSiUJB61kMZ/view?usp=drive_link)
