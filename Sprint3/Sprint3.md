@@ -5,60 +5,60 @@
 ## Work Completed in Sprint 3
 
 ### BACKEND
-Implemented an API to update court availability when a timeslot is booked, ensuring booking details are recorded in the Bookings table.
+- Implemented an API to update court availability when a timeslot is booked, ensuring booking details are recorded in the Bookings table.
 
-Optimized the getCourts API to reduce the number of database queries.
+- Optimized the getCourts API to reduce the number of database queries.
 
-Developed an API that allows users to cancel a booking, which frees up the blocked timeslot and updates the court status in the Booking table.
+- Developed an API that allows users to cancel a booking, which frees up the blocked timeslot and updates the court status in the Booking table.
 
-Created an API that returns a JSON list of bookings for a particular customer to manage their reservations.
+- Created an API that returns a JSON list of bookings for a particular customer to manage their reservations.
 
-Added new unit tests for the CancelBookingAndUpdateSlot, UpdateCourtSlotAndBooking, and listBookings APIs, and collaborated with the front-end team to integrate the back-end with the Angular application flow while updating the database schema as needed.
+- Added new unit tests for the CancelBookingAndUpdateSlot, UpdateCourtSlotAndBooking, and listBookings APIs, and collaborated with the front-end team to integrate the back-end with the Angular application flow while updating the database schema as needed.
 
-Implemented an API to list courts which helps in showcasing the courts available before adding or removing courts to the admin portal.
+- Implemented an API to list courts which helps in showcasing the courts available before adding or removing courts to the admin portal.
 
-Implemented an API to create court which is useful to add courts when there is a new court available.
+- Implemented an API to create court which is useful to add courts when there is a new court available.
 
-Implemented an API to create sport which provides capability to add new sports which are introduced.
+- Implemented an API to create sport which provides capability to add new sports which are introduced.
 
-Implemented an API to list sports which helps in showcasing the sports available before adding or removing sports to admin portal and to sports list for main portal.
+- Implemented an API to list sports which helps in showcasing the sports available before adding or removing sports to admin portal and to sports list for main portal.
 
-Implemented an API to delete court. This helps in removing the courts that are not needed.
+- Implemented an API to delete court. This helps in removing the courts that are not needed.
 
-Implemented logic which takes in emailID of the user and fetch the customer id which is used for the create booking logic.
+- Implemented logic which takes in emailID of the user and fetch the customer id which is used for the create booking logic.
 
-Implemented logic to update booking status for delete.
+- Implemented logic to update booking status for delete.
 
-Added unit test cases for Create Court, Create Sport, List Courts, List Sports and Delete Court and collaborated with front-end team to integrate angular components as per the need and enhancing the database schema as required.
+- Added unit test cases for Create Court, Create Sport, List Courts, List Sports and Delete Court and collaborated with front-end team to integrate angular components as per the need and enhancing the database schema as required.
 
-Swagger documentation has been added to new API’s at BackEnd.
+- Swagger documentation has been added to new API’s at BackEnd.
 
 ### FRONTEND
 
 Admin Page :
 
-An admin page has been added to make addition and deletion of courts and sports easier. It has the following components:
+- An admin page has been added to make addition and deletion of courts and sports easier. It has the following components:
 
-admin-sports component – The sports are tabulated and new sports can be added.
+- admin-sports component – The sports are tabulated and new sports can be added.
 
-admin-courts component – The courts are tabulated against their respective sports. A filter search bar allows for easy navigation and new courts can be added.
+- admin-courts component – The courts are tabulated against their respective sports. A filter search bar allows for easy navigation and new courts can be added.
 
-User testing has been conducted for all 3 of these components and the subsequent pull requests have detailed descriptions of them along with pictures.
+- User testing has been conducted for all 3 of these components and the subsequent pull requests have detailed descriptions of them along with pictures.
 
 Booking Flow:
 
-Now able to update the booking details in real time to the database by sending a JSON to the backend consisting the courtID, courtName, Slot_Index, Sport_name, Sport_ID, Customer_email.
-Also made sure to reload the page after booking confirmation to show updated court slots.
-Added a toast notification post booking confirmation from BackEnd otherwise an alert with Booking Failed dialog.
-Also we made sure that the booking fails if the user who is trying to book a slot is not registered with us.
-Performed unit testing on the courts component again in sprint two after adding functionalities.
+- Now able to update the booking details in real time to the database by sending a JSON to the backend consisting the courtID, courtName, Slot_Index, Sport_name, Sport_ID, Customer_email.
+- Also made sure to reload the page after booking confirmation to show updated court slots.
+- Added a toast notification post booking confirmation from BackEnd otherwise an alert with Booking Failed dialog.
+- Also we made sure that the booking fails if the user who is trying to book a slot is not registered with us.
+- Performed unit testing on the courts component again in sprint two after adding functionalities.
 
 My-Bookings :
 
-Sends a GET request to /listBookings?email=... to fetch bookings.
-We are now displaying the bookings of the user with a good UI and also have the option to CANCEL booking.
-For this, a request to the backend with user information will fetch all the booking details affiliated with that user.
-Performed Unit Testing on this component to make sure everything is working.
+- Sends a GET request to /listBookings?email=... to fetch bookings.
+- We are now displaying the bookings of the user with a good UI and also have the option to CANCEL booking.
+- For this, a request to the backend with user information will fetch all the booking details affiliated with that user.
+- Performed Unit Testing on this component to make sure everything is working.
 
 ## Unit Test Case Results:
 
@@ -121,6 +121,15 @@ Cypress Test Result
 - DeleteCourt_test Unit TestCase Result
 
 ![Test Case Results](Pics/DeleteCourt_TestCase.png)
+
+- ListBookings_test Unit TestCase Result
+
+![Test Case Results](Pics/ListBookings.jpeg)
+
+- GetCourts_test Unit TestCase Result
+
+![Test Case Results](Pics/GetCourts.jpeg)
+
 
 ### FRONTEND
 
