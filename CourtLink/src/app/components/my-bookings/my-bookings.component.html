@@ -9,16 +9,38 @@
     </div>
   </div>
 
+  <!-- Filter Options -->
+  <div class="flex items-center gap-3 ml-11 mt-2 mb-6">
+    <label class="flex items-center gap-2 text-sm text-white cursor-pointer">
+      <input
+        type="checkbox"
+        [checked]="showCancelled()"
+        (change)="onToggleShowCancelled($event)"
+        class="accent-[#FA4616] scale-110 cursor-pointer"
+      />
+      Show Cancelled Bookings
+    </label>
+  </div>
+
   <!-- No bookings case -->
-  <div *ngIf="bookings().length === 0" class="text-center text-lg italic text-white">
+  <div *ngIf="filteredBookings.length === 0" class="text-center text-lg italic text-white">
     🏀 No bookings yet — time to hit the court!
   </div>
 
   <!-- Booking Cards Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pl-10 pr-4">
-    <div *ngFor="let booking of bookings()" 
-         class="bg-white/80 text-[#003B5B] rounded-2xl px-8 py-6 shadow-xl transition-transform transform hover:scale-[1.01] backdrop-blur-sm">
+    <div *ngFor="let booking of filteredBookings" 
+         class="bg-white/80 text-[#003B5B] rounded-2xl px-8 py-6 shadow-xl transition-all duration-500 ease-in-out transform hover:scale-[1.01] backdrop-blur-sm"
+         [ngClass]="{
+           'scale-0 opacity-0': cancellingId() === booking.booking_id
+         }">
       
+      <!-- CANCELLED Badge -->
+      <div *ngIf="booking.booking_status !== 'booked'"
+           class="text-sm text-white bg-red-600 px-3 py-1 rounded-full mb-3 w-fit shadow-md">
+        CANCELLED
+      </div>
+
       <div class="grid grid-cols-2 gap-y-3 text-lg font-medium capitalize">
         <p><span class="text-[#005B8D] font-semibold">Booking ID:</span> {{ booking.booking_id }}</p>
         <p><span class="text-[#005B8D] font-semibold">Sport:</span> {{ booking.sport_name }}</p>
@@ -26,17 +48,20 @@
         <p><span class="text-[#005B8D] font-semibold">Time Slot:</span> {{ booking.slot_time }}</p>
         <p class="col-span-2">
           <span class="text-[#005B8D] font-semibold">Status:</span>
-          <span [ngClass]="{
-            'text-green-600': booking.booking_status === 'booked',
-            'text-red-600': booking.booking_status !== 'booked'
-          }" class="ml-1">
+          <span
+            [ngClass]="({
+              'text-green-600': booking.booking_status === 'booked',
+              'text-red-600': booking.booking_status !== 'booked'
+            })"
+            class="ml-1"
+          >
             ✅ {{ booking.booking_status }}
           </span>
         </p>
       </div>
 
       <!-- Cancel Button -->
-      <div class="mt-4 text-right">
+      <div class="mt-4 text-right" *ngIf="booking.booking_status === 'booked'">
         <button
           (click)="cancelBooking(booking.booking_id)"
           class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm transition">
@@ -45,4 +70,9 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Toast Notification -->
+<div *ngIf="showToast()" class="fixed bottom-6 right-6 z-50 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg transition-opacity duration-300">
+  {{ toastMessage() }}
 </div>
