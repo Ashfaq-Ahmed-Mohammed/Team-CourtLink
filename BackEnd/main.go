@@ -11,6 +11,7 @@ import (
 	"BackEnd/Court"
 	"BackEnd/Customer"
 	"BackEnd/Sport"
+	"BackEnd/Utils"
 	_ "BackEnd/docs"
 	"crypto/x509"
 	"encoding/pem"
@@ -21,6 +22,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
+	"github.com/robfig/cron/v3"
 	"github.com/rs/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -68,6 +70,8 @@ func validateToken(next http.Handler) http.Handler {
 }
 
 func main() {
+
+	startScheduler()
 	r := mux.NewRouter()
 
 	corsHandler := cors.New(cors.Options{
@@ -101,4 +105,18 @@ func main() {
 
 	fmt.Println("Server is running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", handler))
+}
+
+func startScheduler() {
+	c := cron.New()
+	_, err := c.AddFunc("0 0 * * *", func() {
+		log.Println("Resetting court time slots at midnight...")
+		if err := Utils.ResetTimeSlotsForAvailableCourts(); err != nil {
+			log.Printf("Error resetting slots: %v", err)
+		}
+	})
+	if err != nil {
+		log.Fatalf("Failed to schedule reset job: %v", err)
+	}
+	c.Start()
 }
