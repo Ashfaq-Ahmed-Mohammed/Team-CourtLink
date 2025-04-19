@@ -1,6 +1,6 @@
 <div class="bg-gradient-to-b from-[#005B8D] to-[#F26A2E]">
   <nav class="bg-[#005B8D] text-white px-6 py-4 h-17 flex items-center justify-between relative">
-    
+
     <!-- University Logo on the Left -->
     <a href="/" class="flex items-center">
       <img src="https://i.bleacherreport.net/images/team_logos/328x328/florida_gators_football.png?canvas=492,328"
@@ -8,7 +8,7 @@
            class="h-12 mr-3">
       <span class="text-xl font-bold">UFCourtLink</span>
     </a>
-    
+
     <!-- Centered Search Bar -->
     <div class="absolute left-1/2 transform -translate-x-1/2 w-[22rem]">
       <div class="relative">
@@ -19,18 +19,16 @@
                  focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#005B8D] 
                  transition duration-300 shadow-md"
         >
-        <!-- ✅ Material Search Icon -->
         <mat-icon 
           fontIcon="search"
-          class="absolute top-1/2 right-4 transform -translate-y-1/2 text-white/80 pointer-events-none"
-        >
+          class="absolute top-1/2 right-4 transform -translate-y-1/2 text-white/80 pointer-events-none">
         </mat-icon>
       </div>
     </div>
 
     <!-- User Profile + My Bookings -->
     <div class="absolute top-4 h-14 right-6 flex space-x-4 items-center">
-      
+
       <!-- My Bookings Button -->
       <a routerLink="/my-bookings"
          class="bg-white text-[#005B8D] font-semibold px-4 py-2 rounded-full hover:bg-gray-200 
@@ -38,19 +36,21 @@
         My Bookings
       </a>
 
-      <!-- Show Profile Icon if Logged In -->
+      <!-- Show Hamburger Menu if Logged In -->
       <ng-container *ngIf="auth.user$ | async as user; else loggedOut">
-        <button mat-icon-button (click)="logout()">
-          <img *ngIf="user.picture; else defaultIcon"
-               [src]="user.picture"
-               [alt]="user.name"
-               class="h-10 w-10 rounded-full">
-          <ng-template #defaultIcon>
-            <img src="https://via.placeholder.com/150/4CAF50/FFFFFF?text=No+Image"
-                 alt="Default Green Icon"
-                 class="h-10 w-10 rounded-full">
-          </ng-template>
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu">
+          <mat-icon class="text-white">menu</mat-icon>
         </button>
+        <mat-menu #profileMenu="matMenu">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Log Out</span>
+          </button>
+          <button mat-menu-item (click)="openContactUs()">
+            <mat-icon>mail</mat-icon>
+            <span>Contact Us</span>
+          </button>
+        </mat-menu>
       </ng-container>
 
       <!-- Default Icon if Not Logged In -->
