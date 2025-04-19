@@ -6,6 +6,7 @@ import { AppComponent } from './app/app.component';
 import { RouterModule } from '@angular/router'; // Correct path if app.component.ts is inside the 'app' folder
 import { provideHttpClient } from '@angular/common/http';
 
+
 bootstrapApplication(AppComponent, {
   providers: [
     provideAuth0({
