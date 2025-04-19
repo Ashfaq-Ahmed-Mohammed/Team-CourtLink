@@ -94,6 +94,7 @@ func main() {
 	r.HandleFunc("/ListCourts", Court.ListCourts).Methods("GET", "OPTIONS")
 	r.HandleFunc("/CancelBookingandUpdateSlot", Court.CancelBookingandUpdateSlot).Methods("PUT", "OPTIONS")
 	r.HandleFunc("/listBookings", Bookings.ListBookings).Methods("GET", "OPTIONS")
+	r.HandleFunc("/resetCourtSlots", Court.ResetCourtSlotsHandler).Methods("PUT", "OPTIONS")
 
 	newroute := r.PathPrefix("/api").Subrouter()
 	newroute.Use(validateToken)
