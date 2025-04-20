@@ -1,17 +1,16 @@
 <!-- Navbar + Header reused from admin-sports -->
-<!-- Replace “SPORT NAME” with “COURT NAME” and “SPORT” -->
 <div class="-mt-20">
-    <nav class="bg-[#F26A2E] text-white px-6 py-4 h-17 flex items-center justify-between">
-      <a href="/" class="flex items-center">
-        <img
-          src="https://i.bleacherreport.net/images/team_logos/328x328/florida_gators_football.png?canvas=492,328"
-          alt="UF Logo"
-          class="h-12 mr-3"
-        />
-        <span class="text-xl font-bold">UFCourtLink</span>
-      </a>
-      <div class="text-xl font-bold text-[#005B8D]">ADMIN</div>
-    </nav>
+  <nav class="bg-[#F26A2E] text-white px-6 py-4 h-17 flex items-center justify-between">
+    <a href="/" class="flex items-center">
+      <img
+        src="https://i.bleacherreport.net/images/team_logos/328x328/florida_gators_football.png?canvas=492,328"
+        alt="UF Logo"
+        class="h-12 mr-3"
+      />
+      <span class="text-xl font-bold">UFCourtLink</span>
+    </a>
+    <div class="text-xl font-bold text-[#005B8D]">ADMIN</div>
+  </nav>
 </div>
 
 <div class="w-full min-h-screen bg-[#fffaf0] px-10 pb-20">
@@ -67,7 +66,11 @@
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">ACTION</th>
         <td mat-cell *matCellDef="let court" class="text-center border-[3px] border-[#005B8D] px-4 py-2 text-lg">
-          <button mat-raised-button class="!bg-red-500 !text-white font-bold py-1 px-4 rounded-full shadow-none">
+          <button
+            mat-raised-button
+            (click)="deleteCourt(court.court_name)"
+            class="!bg-red-500 !text-white font-bold py-1 px-4 rounded-full shadow-none"
+          >
             Delete
           </button>
         </td>

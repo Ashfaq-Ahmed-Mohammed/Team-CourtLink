@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
-import { AddCourtDialogComponent } from '../add-court-dialog/add-court-dialog.component'; // ✅ Update path if needed
+import { AddCourtDialogComponent } from '../add-court-dialog/add-court-dialog.component';
 
 @Component({
   selector: 'app-admin-courts',
@@ -19,7 +19,7 @@ import { AddCourtDialogComponent } from '../add-court-dialog/add-court-dialog.co
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
-    AddCourtDialogComponent // ✅ Required to open the modal
+    AddCourtDialogComponent,
   ],
   templateUrl: './admin-courts.component.html',
 })
@@ -59,7 +59,7 @@ export class AdminCourtsComponent implements OnInit {
       if (result) {
         this.http.post('http://localhost:8080/CreateCourt', result).subscribe({
           next: () => {
-            this.fetchCourts(); // 🔄 Refresh after adding court
+            this.fetchCourts(); // Refresh after add
           },
           error: (err) => {
             alert('Error creating court: ' + err.error);
@@ -67,5 +67,20 @@ export class AdminCourtsComponent implements OnInit {
         });
       }
     });
+  }
+
+  deleteCourt(courtName: string): void {
+    const body = { Court_Name: courtName };
+
+    this.http
+      .request('delete', 'http://localhost:8080/DeleteCourt', { body })
+      .subscribe({
+        next: () => {
+          this.fetchCourts(); // Refresh after delete
+        },
+        error: (err) => {
+          alert('Error deleting court: ' + err.error);
+        },
+      });
   }
 }
