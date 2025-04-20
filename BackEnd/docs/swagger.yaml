@@ -536,4 +536,32 @@ paths:
       summary: List bookings for a customer
       tags:
       - bookings
+  /resetCourtSlots:
+    put:
+      consumes:
+      - application/json
+      description: Sets every slot (08‑18h) back to **available** (value `1`) for
+        every court whose `court_status == 1`.<br>
+      parameters:
+      - description: Reset a single court by name
+        example: '"Court A"'
+        in: query
+        name: court_name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Slots reset successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Database error while updating slots
+          schema:
+            $ref: '#/definitions/DataBase.ErrorResponse'
+      summary: Reset all time‑slots for available courts
+      tags:
+      - courts
 swagger: "2.0"

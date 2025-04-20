@@ -5,7 +5,21 @@ import (
 	"log"
 )
 
-// ResetTimeSlotsForAvailableCourts resets all slots to 1 for courts that are available (Court_Status = 1)
+// ResetCourtSlots godoc
+//
+// @Summary      Reset all time‑slots for available courts
+// @Description  Sets every slot (08‑18h) back to **available** (value `1`) for every court whose `court_status == 1`.<br>
+//   - If **court_name** is supplied, only that court is reset.<br>
+//   - If the court (or any available courts) are not found, the call is a no‑op and returns **200** with an
+//     informational message.
+//
+// @Tags         courts
+// @Accept       json
+// @Produce      json
+// @Param        court_name  query     string  false  "Reset a single court by name"  example("Court A")
+// @Success      200         {object}  map[string]string  "Slots reset successfully"
+// @Failure      500         {object}  DataBase.ErrorResponse  "Database error while updating slots"
+// @Router       /resetCourtSlots [put]
 func ResetTimeSlotsForAvailableCourts(courtName string) error {
 	const (
 		AvailableStatus = 1
