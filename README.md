@@ -1,29 +1,100 @@
-# UF CourtLink 
+# UF CourtLink
 
-## THE WHY
+CourtLink is a sports court reservation system designed to simplify booking and management of sports facilities. It features a modern Angular 17 front end and a Go-based back end with SQLite (via GORM), offering a seamless user experience for both end users and administrators.
 
-UF Rec Center's sporting facilities are often hailed as some of the best in the nation. However, gaining access to them proved to be an issue. For instance, the other day upon securing the equipment, we walked to the courts only to find them all occupied. The help desk had no knowledge of availability, and we weren't able to play. Thus, we decided to book a court in advance next time. But, a quick search on Google revealed that this was not possible. Booking of courts was only possible for large sporting events and even then, there was no streamlined procedure for the same. So, we took it upon ourselves to doctor a solution.
+![Front End](Resources/Courtlink.png)
 
-## THE HOW
+## Table of Contents
 
-Our application offers an efficient solution for booking sports facilities, providing users with seamless access to information on court availability and time slots. It simplifies the booking process, allowing users to effortlessly view, select, and confirm their preferred slots. For administrators, the platform ensures easy management of reservations, minimizing scheduling conflicts and maximizing court utilization.
+- [Description](#description)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Architecture](#architecture)
+- [Sprint Reports](#sprint-reports)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Key features include:
+## Description
 
-- **User-Friendly Booking System**: Players can quickly find available time slots for various courts (e.g., tennis, basketball,           badminton) and reserve them with just a few taps.
+UF CourtLink enables users to:
 
-- **Real-Time Court Availability**: The system displays up-to-date availability, preventing double bookings and ensuring efficient use of the facilities.
+- Browse available sports and courts
+- Check real-time time slot availability
+- Create, view, and cancel bookings
+- Manage courts and sports via an admin interface
 
-- **Seamless Confirmation**: Once a slot is selected, users can instantly confirm their booking and receive reminders ahead of their session.
+Built for the University of Florida, this project demonstrates full-stack integration, real-time updates, and a clean, maintainable codebase.
 
-- **Administrator Control Panel**: Facility managers can monitor and oversee all reservations, adjust schedules, and resolve any potential conflicts easily.
+## Features
 
-- **Hassle-Free Experience**: Both players and administrators benefit from an intuitive, streamlined process that ensures a smooth, stress-free experience for everyone involved.
+- **User Booking Flow**: Select sport → view courts → choose time slot → confirm or cancel booking
+- **Admin Dashboard**: Add/delete sports & courts, filter/search courts
+- **Real-Time Availability**: Automatic slot blocking and freeing on booking/cancellation
+- **Authentication**: Customer registration and validation
+- **Responsive UI**: Angular 17 with Tailwind CSS and Angular Material
 
-## TEAM MEMBERS
+## Tech Stack
 
-- Ram Pandey (UFID: 6772-4049)
-- Chetan Reddy Ramini (UFID: 2400-4110)
-- Ashfaq Ahmed Mohammed (UFID: 8683-5927)
-- Rohith Kumar Ballem (UFID: 3096-9136) 
+- **Front End**: Angular 17, Angular Material, Tailwind CSS, Cypress for e2e testing, Jasmine and Karma for Unit testing.
+- **Back End**: Go, GORM, SQLite, Gorrila Mux for .Routing
 
+## Installation
+
+1. **Clone the repository**
+
+    ```bash
+    git clone https://github.com/Ashfaq-Ahmed-Mohammed/Team-CourtLink.git
+    cd Team-CourtLink
+    ```
+
+2. **Back End Setup**
+
+    ```bash
+    cd BackEnd
+    go mod init
+    go mod tidy
+    go run .  # defaults to CourtLink.db in parent directory
+    ```
+
+3. **Front End Setup**
+
+    ```bash
+    cd ..
+    cd CourtLink
+    npm install
+    ng serve
+    ```
+
+## Usage
+
+- Open your browser at `http://localhost:4200`
+- Register or log in as a customer
+- Browse sports and available courts
+- Make or cancel bookings
+- Access the admin panel via the `/admin` route to manage sports and courts
+
+## Architecture
+
+Below is the high-level architecture diagram illustrating the system components and data flow:
+
+![Architecture Diagram](Resources/architecture.png)
+
+- **Angular Front End**: User interface for customers and administrators.
+- **Go Back End API**: RESTful services handling authentication, court availability, and bookings.
+- **SQLite Database (GORM)**: Persistent storage for customers, sports, courts, timeslots, and bookings.
+- **Swagger Docs**: Auto-generated API specification (accessible via `/swagger/index.html`).
+
+## Sprint Reports
+
+Detailed sprint summaries:
+
+- [Sprint 1 Report](https://github.com/Ashfaq-Ahmed-Mohammed/Team-CourtLink/blob/main/Sprint1/Sprint1.md)
+- [Sprint 2 Report](https://github.com/Ashfaq-Ahmed-Mohammed/Team-CourtLink/blob/main/Sprint2/Sprint2.md)
+- [Sprint 3 Report](https://github.com/Ashfaq-Ahmed-Mohammed/Team-CourtLink/blob/main/Sprint3/Sprint3.md)
+- [Sprint 4 Report](https://github.com/Ashfaq-Ahmed-Mohammed/Team-CourtLink/blob/main/Sprint4/Sprint4.md)
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](https://github.com/Ashfaq-Ahmed-Mohammed/Team-CourtLink/blob/main/LICENSE) for details.
