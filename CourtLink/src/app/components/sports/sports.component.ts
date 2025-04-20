@@ -4,7 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
 import { ApiService } from './../../services/api.service';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, of, firstValueFrom } from 'rxjs';  // ← added 'of'
 
 @Component({
   selector: 'app-sports',
@@ -49,8 +49,18 @@ export class SportsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isAuthenticated$ = this.auth.isAuthenticated$;
-    this.isLoading$       = this.auth.isLoading$;
+    // ——— skipAuth shortcut for e2e tests ———
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('skipAuth') === 'true') {
+      // if ?skipAuth=true, bypass Auth0 and show grid immediately
+      this.isAuthenticated$ = of(true);
+      this.isLoading$       = of(false);
+    } else {
+      // normal Auth0 behavior
+      this.isAuthenticated$ = this.auth.isAuthenticated$;
+      this.isLoading$       = this.auth.isLoading$;
+    }
+    // ————————————————————————————————
 
     this.currentSlide = this.slides[0];
     setInterval(() => {
