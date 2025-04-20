@@ -2,6 +2,7 @@ package Court
 
 import (
 	"BackEnd/DataBase"
+	"BackEnd/Utils"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -205,4 +206,15 @@ func CancelBookingandUpdateSlot(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Booking cancelled and slot updated successfully for Booking_ID: %d", cancelRequest.Booking_ID)
+}
+
+func ResetCourtSlotsHandler(w http.ResponseWriter, r *http.Request) {
+	err := Utils.ResetTimeSlotsForAvailableCourts()
+	if err != nil {
+		http.Error(w, "Failed to reset court slots", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Court slots reset successfully!"))
 }
