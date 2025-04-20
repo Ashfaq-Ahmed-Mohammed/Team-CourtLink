@@ -79,3 +79,38 @@ func TestCreateCustomerInvalidRequest(t *testing.T) {
 		t.Errorf("expected status %d, got %d", http.StatusBadRequest, status)
 	}
 }
+func TestCreateCustomerAlreadyExists(t *testing.T) {
+	setupTestDB()
+
+	// Pre-insert a customer
+	existing := DataBase.Customer{
+		Name:    "Rohi B",
+		Email:   "rohb@example.com",
+		Contact: "1234567890",
+	}
+	if err := DataBase.DB.Create(&existing).Error; err != nil {
+		t.Fatalf("failed to insert existing customer: %v", err)
+	}
+
+	// Send the same data again
+	customerRequest := map[string]interface{}{
+		"Name":    "Rohi B",
+		"Email":   "rohb@example.com",
+		"Contact": "1234567890",
+	}
+	body, _ := json.Marshal(customerRequest)
+	req, _ := http.NewRequest("POST", "/Customer", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(CreateCustomer)
+	handler.ServeHTTP(recorder, req)
+
+	if recorder.Code != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, recorder.Code)
+	}
+
+	if recorder.Body.Len() != 0 {
+		t.Errorf("expected empty body for existing customer, got %q", recorder.Body.String())
+	}
+}

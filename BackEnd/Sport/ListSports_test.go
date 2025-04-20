@@ -37,3 +37,33 @@ func TestListSports(t *testing.T) {
 		t.Errorf("expected %v, got %v", expectedSport, response)
 	}
 }
+
+func TestListSportsMultipleEntries(t *testing.T) {
+	DataBase.DB = setupTestDB()
+
+	sports := []DataBase.Sport{
+		{Sport_name: "Basketball"},
+		{Sport_name: "Tennis"},
+		{Sport_name: "Volleyball"},
+	}
+	for _, s := range sports {
+		DataBase.DB.Create(&s)
+	}
+
+	req, _ := http.NewRequest("GET", "/ListSports", nil)
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(ListSports)
+	handler.ServeHTTP(recorder, req)
+
+	var response []string
+	if err := json.NewDecoder(recorder.Body).Decode(&response); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+
+	expected := []string{"Basketball", "Tennis", "Volleyball"}
+	for i, sport := range expected {
+		if response[i] != sport {
+			t.Errorf("expected %s, got %s", sport, response[i])
+		}
+	}
+}
