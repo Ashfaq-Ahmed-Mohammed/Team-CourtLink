@@ -209,12 +209,36 @@ func CancelBookingandUpdateSlot(w http.ResponseWriter, r *http.Request) {
 }
 
 func ResetCourtSlotsHandler(w http.ResponseWriter, r *http.Request) {
-	err := Utils.ResetTimeSlotsForAvailableCourts()
+	if r.Method != http.MethodPut {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	type requestBody struct {
+		CourtName string `json:"court_name"`
+	}
+
+	var body requestBody
+
+	// Parse JSON body
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
+		return
+	}
+
+	// Call reset function with optional court name
+	err := Utils.ResetTimeSlotsForAvailableCourts(body.CourtName)
 	if err != nil {
 		http.Error(w, "Failed to reset court slots", http.StatusInternalServerError)
 		return
 	}
 
+	// Craft response message
+	msg := "Court slots reset successfully!"
+	if body.CourtName != "" {
+		msg = fmt.Sprintf("Court slots reset successfully for court: %s", body.CourtName)
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Court slots reset successfully!"))
+	w.Write([]byte(msg))
 }

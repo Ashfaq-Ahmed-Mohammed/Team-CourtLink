@@ -95,11 +95,10 @@ func main() {
 	r.HandleFunc("/ListCourts", Court.ListCourts).Methods("GET", "OPTIONS")
 	r.HandleFunc("/CancelBookingandUpdateSlot", Court.CancelBookingandUpdateSlot).Methods("PUT", "OPTIONS")
 	r.HandleFunc("/listBookings", Bookings.ListBookings).Methods("GET", "OPTIONS")
- 
+
 	r.HandleFunc("/AdminLogin", Admin.AdminLogin).Methods("POST", "OPTIONS")
 
 	r.HandleFunc("/resetCourtSlots", Court.ResetCourtSlotsHandler).Methods("PUT", "OPTIONS")
-
 
 	newroute := r.PathPrefix("/api").Subrouter()
 	newroute.Use(validateToken)
@@ -117,7 +116,7 @@ func startScheduler() {
 	c := cron.New()
 	_, err := c.AddFunc("0 0 * * *", func() {
 		log.Println("Resetting court time slots at midnight...")
-		if err := Utils.ResetTimeSlotsForAvailableCourts(); err != nil {
+		if err := Utils.ResetTimeSlotsForAvailableCourts(""); err != nil {
 			log.Printf("Error resetting slots: %v", err)
 		}
 	})
