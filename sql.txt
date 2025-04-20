@@ -2,44 +2,36 @@ SQL Queries
 
 1. Customer Table
 
-CREATE TABLE Customer (
-    Customer_ID INTEGER PRIMARY KEY
-                        UNIQUE
-                        NOT NULL,
-    Name        TEXT    NOT NULL,
-    Contact     TEXT    UNIQUE
-                        NOT NULL,
-    Email       TEXT    NOT NULL
+CREATE TABLE "Customer" (
+	"Customer_ID"	INTEGER NOT NULL UNIQUE,
+	"Name"	TEXT NOT NULL,
+	"Contact"	TEXT NOT NULL,
+	"Email"	TEXT NOT NULL,
+	PRIMARY KEY("Customer_ID")
 );
 
 2. Sport Table
 
-CREATE TABLE Sport (
-    Sport_ID          INTEGER PRIMARY KEY
-                              UNIQUE
-                              NOT NULL,
-    Sport_name        TEXT    UNIQUE
-                              NOT NULL,
-    Sport_Description TEXT
+CREATE TABLE "Sport" (
+	"Sport_ID"	INTEGER NOT NULL UNIQUE,
+	"Sport_name"	TEXT NOT NULL UNIQUE,
+	"Sport_Description"	TEXT,
+	PRIMARY KEY("Sport_ID" AUTOINCREMENT)
 );
 
 3. Court Table 
 
-CREATE TABLE Court (
-    Court_ID       INTEGER NOT NULL
-                           UNIQUE,
-    Court_Name     TEXT    NOT NULL
-                           UNIQUE,
-    Court_Location TEXT    NOT NULL
-                           UNIQUE,
-    Court_Capacity INTEGER,
-    Court_Status   INTEGER NOT NULL,
-    Sport_id       INTEGER REFERENCES Sport (Sport_ID) ON DELETE SET NULL
-                                                       ON UPDATE CASCADE,
-    PRIMARY KEY (
-        Court_ID AUTOINCREMENT
-    )
+CREATE TABLE "Court" (
+	"Court_ID"	INTEGER NOT NULL UNIQUE,
+	"Court_Name"	TEXT NOT NULL UNIQUE,
+	"Court_Location"	TEXT,
+	"Court_Capacity"	INTEGER,
+	"Court_Status"	INTEGER NOT NULL,
+	"Sport_id"	INTEGER,
+	PRIMARY KEY("Court_ID" AUTOINCREMENT),
+	FOREIGN KEY("Sport_id") REFERENCES "Sport"("Sport_ID") ON DELETE SET NULL ON UPDATE CASCADE
 );
+
 4. Bookings Table
 
 CREATE TABLE "Bookings" (
@@ -54,3 +46,34 @@ CREATE TABLE "Bookings" (
 	CONSTRAINT "CSID" FOREIGN KEY("Customer_ID") REFERENCES "Customer"("Customer_ID"),
 	CONSTRAINT "SID" FOREIGN KEY("Sport_ID") REFERENCES "Sport"("Sport_ID")
 );
+
+5. Admin Table 
+
+CREATE TABLE "Admin" (
+	"Admin_ID"	INTEGER,
+	"Username"	TEXT NOT NULL UNIQUE,
+	"Password"	TEXT NOT NULL,
+	PRIMARY KEY("Admin_ID" AUTOINCREMENT)
+);
+
+6. Court_Timeslots Table
+
+CREATE TABLE "Court_TimeSlots" (
+	"ID"	INTEGER,
+	"slot_08_09"	INTEGER NOT NULL DEFAULT 1,
+	"slot_09_10"	INTEGER NOT NULL DEFAULT 1,
+	"slot_10_11"	INTEGER NOT NULL DEFAULT 1,
+	"slot_11_12"	INTEGER NOT NULL DEFAULT 1,
+	"slot_12_13"	INTEGER NOT NULL DEFAULT 1,
+	"slot_13_14"	INTEGER NOT NULL DEFAULT 1,
+	"slot_14_15"	INTEGER NOT NULL DEFAULT 1,
+	"slot_15_16"	INTEGER NOT NULL DEFAULT 1,
+	"slot_16_17"	INTEGER NOT NULL DEFAULT 1,
+	"slot_17_18"	INTEGER NOT NULL DEFAULT 1,
+	"Court_Name"	TEXT UNIQUE,
+	"Court_ID"	INTEGER,
+	PRIMARY KEY("ID" AUTOINCREMENT),
+	FOREIGN KEY("Court_ID") REFERENCES "Court"("Court_ID") ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY("Court_Name") REFERENCES "Court"("Court_Name") ON DELETE SET NULL ON UPDATE CASCADE
+);
+

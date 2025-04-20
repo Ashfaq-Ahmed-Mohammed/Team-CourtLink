@@ -88,6 +88,12 @@ type Bookings struct {
 	Court    Court    `gorm:"foreignKey:Court_ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
+type Admin struct {
+	Admin_ID uint   `gorm:"column:Admin_ID;primaryKey;autoIncrement" json:"Admin_ID"`
+	Username string `gorm:"column:Username;unique;not null" json:"Username"`
+	Password string `gorm:"column:Password;not null" json:"Password"`
+}
+
 var DB *gorm.DB
 
 func (Customer) TableName() string {
@@ -108,6 +114,10 @@ func (Court_TimeSlots) TableName() string {
 
 func (Bookings) TableName() string {
 	return "Bookings"
+}
+
+func (Admin) TableName() string {
+	return "Admin"
 }
 
 func init() {
