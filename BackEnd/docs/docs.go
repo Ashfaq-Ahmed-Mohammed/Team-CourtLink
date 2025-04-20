@@ -596,6 +596,47 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/resetCourtSlots": {
+            "put": {
+                "description": "Sets every slot (08‑18h) back to **available** (value ` + "`" + `1` + "`" + `) for every court whose ` + "`" + `court_status == 1` + "`" + `.\u003cbr\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courts"
+                ],
+                "summary": "Reset all time‑slots for available courts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"Court A\"",
+                        "description": "Reset a single court by name",
+                        "name": "court_name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Slots reset successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Database error while updating slots",
+                        "schema": {
+                            "$ref": "#/definitions/DataBase.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
