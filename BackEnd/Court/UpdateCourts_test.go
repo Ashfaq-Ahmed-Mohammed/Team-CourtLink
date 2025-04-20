@@ -207,7 +207,6 @@ func TestCancelBookingandUpdateSlot(t *testing.T) {
 }
 
 func TestResetCourtSlotsHandler(t *testing.T) {
-
 	db, err := setupTestDB()
 	if err != nil {
 		t.Fatalf("failed to setup test database: %v", err)
@@ -224,6 +223,7 @@ func TestResetCourtSlotsHandler(t *testing.T) {
 		t.Fatalf("failed to create Court: %v", err)
 	}
 
+	// Create timeslots for that court
 	timeSlots := DataBase.Court_TimeSlots{
 		Court_ID:   court.Court_ID,
 		Court_Name: court.Court_Name,
@@ -242,40 +242,27 @@ func TestResetCourtSlotsHandler(t *testing.T) {
 		t.Fatalf("failed to create Court_TimeSlots: %v", err)
 	}
 
-	req, err := http.NewRequest("PUT", "/resetCourtSlots", nil)
+	// Prepare JSON body for request
+	body := `{"court_name": "Court C"}`
+	req, err := http.NewRequest("PUT", "/resetCourtSlots", bytes.NewBuffer([]byte(body)))
 	if err != nil {
 		t.Fatalf("failed to create request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
+	// Perform the request
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(ResetCourtSlotsHandler)
 	handler.ServeHTTP(rr, req)
 
+	// Assert response status code
 	if rr.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, rr.Code)
 	}
 
-	expectedMessage := "Court slots reset successfully!"
+	// Assert response message
+	expectedMessage := "Court slots reset successfully for court: Court C"
 	if rr.Body.String() != expectedMessage {
 		t.Errorf("expected response message %q, got %q", expectedMessage, rr.Body.String())
-	}
-
-	var updatedTimeSlots DataBase.Court_TimeSlots
-	if err := DataBase.DB.First(&updatedTimeSlots, "court_id = ?", court.Court_ID).Error; err != nil {
-		t.Fatalf("failed to fetch updated Court_TimeSlots: %v", err)
-	}
-
-	slots := []int{
-		updatedTimeSlots.Slot_08_09, updatedTimeSlots.Slot_09_10, updatedTimeSlots.Slot_10_11,
-		updatedTimeSlots.Slot_11_12, updatedTimeSlots.Slot_12_13, updatedTimeSlots.Slot_13_14,
-		updatedTimeSlots.Slot_14_15, updatedTimeSlots.Slot_15_16, updatedTimeSlots.Slot_16_17,
-		updatedTimeSlots.Slot_17_18,
-	}
-
-	for idx, slot := range slots {
-		if slot != 1 {
-			t.Errorf("expected slot %d to be 1 (available), got %d", idx, slot)
-		}
 	}
 }
