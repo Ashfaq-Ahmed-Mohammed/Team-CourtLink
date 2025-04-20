@@ -1,4 +1,4 @@
-# Team CourtLink
+# UF CourtLink
 
 CourtLink is a sports court reservation system designed to simplify booking and management of sports facilities. It features a modern Angular 17 front end and a Go-based back end with SQLite (via GORM), offering a seamless user experience for both end users and administrators.
 
