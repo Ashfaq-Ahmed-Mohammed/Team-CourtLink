@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  Admin.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   Bookings.BookingResponse:
     properties:
       booking_id:
@@ -130,6 +137,42 @@ info:
   title: Court Booking API
   version: "1.0"
 paths:
+  /AdminLogin:
+    post:
+      consumes:
+      - application/json
+      description: Validates admin credentials (plain text match)
+      parameters:
+      - description: Admin credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/Admin.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Admin login
+      tags:
+      - admins
   /CancelBookingandUpdateSlot:
     put:
       consumes:

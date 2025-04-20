@@ -15,6 +15,61 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/AdminLogin": {
+            "post": {
+                "description": "Validates admin credentials (plain text match)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admins"
+                ],
+                "summary": "Admin login",
+                "parameters": [
+                    {
+                        "description": "Admin credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Admin.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/CancelBookingandUpdateSlot": {
             "put": {
                 "description": "Cancels a booking by updating its status to \"Cancelled\" and marks the corresponding time slot (based on Booking_Time) as available (sets it to 1) in the Court_TimeSlots record.",
@@ -544,6 +599,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "Admin.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "Bookings.BookingResponse": {
             "type": "object",
             "properties": {
