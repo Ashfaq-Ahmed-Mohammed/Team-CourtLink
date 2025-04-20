@@ -25,7 +25,12 @@
   <!-- Search Bar + Add Button Row -->
   <div class="w-full flex justify-between items-center px-11 mb-6">
     <mat-form-field appearance="outline" class="w-[550px] rounded-full mat-orange-border">
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search Courts or Sports..." class="bg-[#fffaf0] text-sm rounded-full px-3 py-2" />
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Search Courts or Sports..."
+        class="bg-[#fffaf0] text-sm rounded-full px-3 py-2"
+      />
     </mat-form-field>
     <button
       mat-raised-button
@@ -46,32 +51,55 @@
     >
       <!-- S.NO -->
       <ng-container matColumnDef="sno">
-        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">S.NO.</th>
-        <td mat-cell *matCellDef="let court; let i = index" class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">{{ i + 1 }}</td>
+        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">
+          S.NO.
+        </th>
+        <td mat-cell *matCellDef="let court; let i = index" class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">
+          {{ i + 1 }}
+        </td>
       </ng-container>
 
       <!-- Court Name -->
       <ng-container matColumnDef="court">
-        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">COURT NAME</th>
-        <td mat-cell *matCellDef="let court" class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">{{ court.court_name }}</td>
+        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">
+          COURT NAME
+        </th>
+        <td mat-cell *matCellDef="let court" class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">
+          {{ court.court_name }}
+        </td>
       </ng-container>
 
       <!-- Sport -->
       <ng-container matColumnDef="sport">
-        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">SPORT</th>
-        <td mat-cell *matCellDef="let court" class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">{{ court.sport_name }}</td>
+        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">
+          SPORT
+        </th>
+        <td mat-cell *matCellDef="let court" class="text-center border-[3px] border-[#005B8D] text-[#005B8D] px-4 py-2 text-lg">
+          {{ court.sport_name }}
+        </td>
       </ng-container>
 
-      <!-- Action -->
+      <!-- Action Buttons -->
       <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">ACTION</th>
-        <td mat-cell *matCellDef="let court" class="text-center border-[3px] border-[#005B8D] px-4 py-2 text-lg">
+        <th mat-header-cell *matHeaderCellDef class="text-center uppercase text-[#005B8D] border-[3px] border-[#005B8D] px-4 py-3 font-extrabold text-2xl">
+          ACTION
+        </th>
+        <td mat-cell *matCellDef="let court" class="text-center border-[3px] border-[#005B8D] px-4 py-2 text-lg space-x-3">
+          <!-- Delete Button -->
           <button
             mat-raised-button
             (click)="deleteCourt(court.court_name)"
             class="!bg-red-500 !text-white font-bold py-1 px-4 rounded-full shadow-none"
           >
             Delete
+          </button>
+          <!-- Reset Button -->
+          <button
+            mat-raised-button
+            (click)="resetCourtSlots(court.court_name)"
+            class="!bg-yellow-400 hover:!bg-yellow-500 !text-black font-bold py-1 px-4 rounded-full shadow-none"
+          >
+            Reset
           </button>
         </td>
       </ng-container>

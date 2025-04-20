@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
 import { AddCourtDialogComponent } from '../add-court-dialog/add-court-dialog.component';
 
 @Component({
@@ -58,28 +57,32 @@ export class AdminCourtsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.http.post('http://localhost:8080/CreateCourt', result).subscribe({
-          next: () => {
-            this.fetchCourts(); // Refresh after add
-          },
-          error: (err) => {
-            alert('Error creating court: ' + err.error);
-          },
+          next: () => this.fetchCourts(),
+          error: (err) => alert('Error creating court: ' + err.error),
         });
       }
     });
   }
 
   deleteCourt(courtName: string): void {
-    const body = { Court_Name: courtName };
-
     this.http
-      .request('delete', 'http://localhost:8080/DeleteCourt', { body })
+      .request('delete', 'http://localhost:8080/DeleteCourt', {
+        body: { Court_Name: courtName },
+      })
       .subscribe({
-        next: () => {
-          this.fetchCourts(); // Refresh after delete
-        },
+        next: () => this.fetchCourts(),
+        error: (err) => alert('Error deleting court: ' + err.error),
+      });
+  }
+
+  resetCourtSlots(courtName: string): void {
+    this.http.put('http://localhost:8080/resetCourtSlots', { court_name: courtName }, { responseType: 'text' as 'json' })
+      .subscribe({
+        next: (res) => alert(res),
         error: (err) => {
-          alert('Error deleting court: ' + err.error);
+          console.error('Reset error:', err);
+          const errorMsg = err?.error?.message || err?.error || err.message || 'Unknown error';
+          alert('Reset failed: ' + errorMsg);
         },
       });
   }
