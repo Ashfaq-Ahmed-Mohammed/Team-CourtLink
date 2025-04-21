@@ -477,4 +477,4 @@ Sets every slot (08–18h) back to available (value 1) for courts whose status i
 
 
 ### Video Recordings
-- [Sprint 4 Video Recording](https://drive.google.com/file/d/1FumildnwsavBMdAnkCbc_pSiUJB61kMZ/view?usp=drive_link)
+- [Sprint 4 Video Recording](https://drive.google.com/file/d/1Qpmgb9lX2kxYKiYbhfdFbA6wNuay29la/view?usp=sharing)
